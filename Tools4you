@@ -1,0 +1,1714 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PureWebKit | Online Engineering Calculators, Image KB Reducer &amp; Local PDF Tools</title>
+  <meta name="description" content="Free, privacy-first browser utilities: Off-Grid Solar &amp; LiFePO4 Battery Sizing, SaaS LTV/CAC, EV Charging Savings, Exact-KB Image Size Reducer, PDF Merger, and Image-to-PDF Converter. 100% local processing." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Client-side PDF manipulation library (Zero backend uploads) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* Hide scrollbar on horizontal tool strip while preserving touch swipe */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900 flex flex-col min-h-screen">
+
+  <!-- ===================================================================== -->
+  <!-- UNIFIED STICKY NAVIGATION BAR                                         -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Top Row: Brand Logo, Category Filter Pills, Global Currency Toggle -->
+      <div class="flex flex-wrap items-center justify-between py-3 gap-3">
+        <!-- Brand Logo (Easily Editable) -->
+        <a href="#solar-battery" onclick="switchTool('solar-battery', event)" class="flex items-center gap-2.5 group shrink-0">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-emerald-600 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+          </div>
+          <div>
+            <span id="brand-name-display" class="font-extrabold text-lg tracking-tight text-slate-900">PureWeb<span class="text-indigo-600">Kit</span></span>
+            <span class="hidden sm:block text-[11px] font-medium text-slate-500 -mt-1">Calculators &amp; Local File Studio</span>
+          </div>
+        </a>
+
+        <!-- Category Filter Pills -->
+        <div class="order-3 md:order-2 w-full md:w-auto flex items-center justify-center gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200" role="tablist" aria-label="Tool Categories">
+          <button type="button" data-cat="all" onclick="filterCategory('all')" class="cat-pill flex-1 md:flex-none px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white text-slate-900 shadow-xs">
+            All Tools (6)
+          </button>
+          <button type="button" data-cat="calculators" onclick="filterCategory('calculators')" class="cat-pill flex-1 md:flex-none px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900">
+            Calculators (3)
+          </button>
+          <button type="button" data-cat="files" onclick="filterCategory('files')" class="cat-pill flex-1 md:flex-none px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900">
+            File &amp; PDF Tools (3)
+          </button>
+        </div>
+
+        <!-- Global Currency Toggle + Share URL Button -->
+        <div class="order-2 md:order-3 flex items-center gap-2">
+          <div class="inline-flex items-center rounded-xl bg-slate-100 p-1 border border-slate-200" role="group" aria-label="Currency Toggle">
+            <button type="button" id="btn-usd" onclick="setCurrency('USD')" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all bg-white text-slate-900 shadow-xs">
+              USD ($)
+            </button>
+            <button type="button" id="btn-gbp" onclick="setCurrency('GBP')" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-600 hover:text-slate-900">
+              GBP (£)
+            </button>
+          </div>
+
+          <button type="button" onclick="copyShareUrl()" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 active:scale-95 transition">
+            <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+            <span class="hidden lg:inline">Share</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tool Selector Strip (Hash-Routed Tabs) -->
+      <nav aria-label="Tool Switcher" class="flex items-center gap-1.5 overflow-x-auto py-2.5 border-t border-slate-100 no-scrollbar">
+        <a href="#solar-battery" data-tool="solar-battery" data-group="calculators" onclick="switchTool('solar-battery', event)" class="tool-tab shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-indigo-600 text-white shadow-xs">
+          <span class="w-2 h-2 rounded-full bg-emerald-300"></span>
+          Solar &amp; LiFePO4 Battery
+        </a>
+        <a href="#saas-metrics" data-tool="saas-metrics" data-group="calculators" onclick="switchTool('saas-metrics', event)" class="tool-tab shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+          <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+          SaaS Churn &amp; LTV
+        </a>
+        <a href="#ev-savings" data-tool="ev-savings" data-group="calculators" onclick="switchTool('ev-savings', event)" class="tool-tab shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+          <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+          EV Charging Savings
+        </a>
+        <a href="#image-reducer" data-tool="image-reducer" data-group="files" onclick="switchTool('image-reducer', event)" class="tool-tab shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          Exact-KB Image Reducer
+        </a>
+        <a href="#pdf-merger" data-tool="pdf-merger" data-group="files" onclick="switchTool('pdf-merger', event)" class="tool-tab shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+          <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+          PDF Merger &amp; Reorder
+        </a>
+        <a href="#img-to-pdf" data-tool="img-to-pdf" data-group="files" onclick="switchTool('img-to-pdf', event)" class="tool-tab shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+          Images to PDF
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Toast Notification (Replaces alert()) -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 hidden items-center gap-2.5 bg-slate-900 text-white text-xs sm:text-sm font-medium px-4 py-3 rounded-xl shadow-lg border border-slate-700">
+    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+    <span id="toast-msg">Notification</span>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- ADSENSE HEADER LEADERBOARD SLOT (Fixed min-height + >=40px clearance) -->
+  <!-- ===================================================================== -->
+  <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6 pb-2">
+    <div class="w-full min-h-[90px] bg-slate-100 border border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center text-center p-3">
+      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Advertisement · Top Leaderboard (728×90 / Responsive)</span>
+      <span class="text-xs text-slate-400 mt-0.5">Fixed 90px min-height prevents layout shift (CLS) · 40px+ clearance from interactive controls</span>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MAIN WORKSPACE AREA (44px+ top margin from header ad slot)            -->
+  <!-- ===================================================================== -->
+  <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-9 pb-12 space-y-12">
+
+    <!-- =================================================================== -->
+    <!-- TOOL 1: OFF-GRID SOLAR & LiFePO4 BATTERY SIZING CALCULATOR          -->
+    <!-- =================================================================== -->
+    <section id="panel-solar-battery" class="tool-panel space-y-6">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold mb-2.5">
+          Clean Energy Engineering · US &amp; UK Presets
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Off-Grid Solar &amp; LiFePO4 Battery Sizing Calculator</h1>
+        <p class="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+          Size your off-grid battery bank (Ah &amp; kWh), solar PV array wattage, MPPT charge controller amperage, and estimated hardware investment with safe Depth-of-Discharge (DoD) and inverter efficiency factors.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Inputs -->
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-base font-bold text-slate-900">1. System &amp; Load Parameters</h2>
+            <button type="button" onclick="resetSolarBattery()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700 px-2 py-1 rounded-lg hover:bg-indigo-50">Reset</button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="sb-load" class="block text-xs font-semibold text-slate-700 mb-1.5">Daily Energy Load (Wh/day)</label>
+              <input type="number" id="sb-load" value="4800" min="50" max="250000" step="50" oninput="calcSolarBattery()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+              <p class="text-[11px] text-slate-400 mt-1">4,800 Wh = 4.8 kWh/day</p>
+            </div>
+
+            <div>
+              <label for="sb-days" class="block text-xs font-semibold text-slate-700 mb-1.5">Days of Autonomy (Backup Days)</label>
+              <input type="number" id="sb-days" value="2" min="0.5" max="14" step="0.5" oninput="calcSolarBattery()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+              <p class="text-[11px] text-slate-400 mt-1">Cloudy days covered without sun</p>
+            </div>
+
+            <div>
+              <label for="sb-volt" class="block text-xs font-semibold text-slate-700 mb-1.5">Nominal System Voltage</label>
+              <select id="sb-volt" onchange="calcSolarBattery()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
+                <option value="12">12V DC (Vans, RVs, Boats)</option>
+                <option value="24">24V DC (Medium Cabins)</option>
+                <option value="48" selected>48V DC (Whole-Home Off-Grid)</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="sb-chem" class="block text-xs font-semibold text-slate-700 mb-1.5">Battery Chemistry (Safe DoD)</label>
+              <select id="sb-chem" onchange="calcSolarBattery()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
+                <option value="0.80" selected>LiFePO4 Lithium (80% DoD)</option>
+                <option value="0.50">AGM / Gel Lead-Acid (50% DoD)</option>
+              </select>
+            </div>
+
+            <div class="sm:col-span-2">
+              <label for="sb-region" class="block text-xs font-semibold text-slate-700 mb-1.5">Peak Sun Hours (US / UK Regional Presets)</label>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <select id="sb-region" onchange="applySbPreset()" class="sm:col-span-2 rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
+                  <option value="5.8">US Southwest (AZ, NV, SoCal) — 5.8 PSH</option>
+                  <option value="4.6" selected>US Southeast / Texas (FL, TX) — 4.6 PSH</option>
+                  <option value="3.9">US Northeast / Midwest (NY, IL) — 3.9 PSH</option>
+                  <option value="3.1">UK South England (London, Bristol) — 3.1 PSH</option>
+                  <option value="2.5">UK North &amp; Scotland (Manchester, Edinburgh) — 2.5 PSH</option>
+                </select>
+                <input type="number" id="sb-psh" value="4.6" min="1.0" max="9.0" step="0.1" oninput="calcSolarBattery()" aria-label="Custom Peak Sun Hours" class="rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outputs -->
+        <div class="lg:col-span-5 bg-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-md space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Recommended Off-Grid Spec</span>
+            <span id="sb-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-300">48V LiFePO4</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3.5">
+            <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/70">
+              <p class="text-xs text-slate-400">Battery Capacity</p>
+              <p id="res-sb-ah" class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">272 Ah</p>
+              <p id="res-sb-kwh" class="text-xs text-slate-300 mt-1">13.04 kWh total</p>
+            </div>
+            <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/70">
+              <p class="text-xs text-slate-400">Solar PV Array</p>
+              <p id="res-sb-solar" class="text-2xl sm:text-3xl font-extrabold text-amber-300 mt-1">1,420 W</p>
+              <p id="res-sb-panels" class="text-xs text-slate-300 mt-1">4 × 400W panels</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/60 space-y-2.5 text-sm">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Min MPPT Charge Controller:</span>
+              <span id="res-sb-mppt" class="font-bold text-white">45 Amp MPPT</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Usable Storage (at DoD):</span>
+              <span id="res-sb-usable" class="font-bold text-emerald-300">10.43 kWh</span>
+            </div>
+            <div class="flex justify-between pt-2 border-t border-slate-700/70">
+              <span class="text-slate-300 font-medium">Estimated Hardware Cost:</span>
+              <span id="res-sb-cost" class="font-extrabold text-lg text-white">$4,280</span>
+            </div>
+          </div>
+
+          <div class="bg-slate-800/90 rounded-xl p-3 font-mono text-[11px] text-slate-300 border border-slate-700/60">
+            Formula: Ah = (Daily_Wh ÷ 0.92_InvEff × Days) ÷ (Volts × DoD)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TOOL 2: SaaS CHURN, LTV & CAC PAYBACK CALCULATOR                    -->
+    <!-- =================================================================== -->
+    <section id="panel-saas-metrics" class="tool-panel hidden space-y-6">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold mb-2.5">
+          B2B Subscription &amp; Unit Economics
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">SaaS Churn, LTV &amp; CAC Payback Calculator</h1>
+        <p class="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+          Evaluate subscription unit economics by calculating average customer lifespan, gross-margin-adjusted Customer Lifetime Value (LTV), LTV:CAC health ratio, and CAC payback period in months.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-base font-bold text-slate-900">1. Subscription &amp; Acquisition Inputs</h2>
+            <button type="button" onclick="resetSaas()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700 px-2 py-1 rounded-lg hover:bg-indigo-50">Reset</button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="saas-arpu" class="block text-xs font-semibold text-slate-700 mb-1.5">Monthly ARPU (<span class="curr-sym">$</span>/month)</label>
+              <input type="number" id="saas-arpu" value="79" min="1" max="100000" step="1" oninput="calcSaas()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+              <p class="text-[11px] text-slate-400 mt-1">Average Revenue Per User per month</p>
+            </div>
+
+            <div>
+              <label for="saas-margin" class="block text-xs font-semibold text-slate-700 mb-1.5">Gross Margin (%)</label>
+              <input type="number" id="saas-margin" value="82" min="5" max="100" step="1" oninput="calcSaas()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+              <p class="text-[11px] text-slate-400 mt-1">Typical SaaS gross margin is 75%–88%</p>
+            </div>
+
+            <div>
+              <label for="saas-churn" class="block text-xs font-semibold text-slate-700 mb-1.5">Monthly Logo Churn Rate (%)</label>
+              <input type="number" id="saas-churn" value="3.2" min="0.1" max="50" step="0.1" oninput="calcSaas()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+              <p class="text-[11px] text-slate-400 mt-1">% of active subscribers cancelling each month</p>
+            </div>
+
+            <div>
+              <label for="saas-cac" class="block text-xs font-semibold text-slate-700 mb-1.5">Customer Acquisition Cost — CAC (<span class="curr-sym">$</span>)</label>
+              <input type="number" id="saas-cac" value="520" min="1" max="500000" step="10" oninput="calcSaas()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+              <p class="text-[11px] text-slate-400 mt-1">Total sales + ad spend per new customer</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 bg-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-md space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-400">SaaS Unit Economics</span>
+            <span id="res-saas-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300">3.9x · Healthy</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3.5">
+            <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/70">
+              <p class="text-xs text-slate-400">Customer LTV</p>
+              <p id="res-saas-ltv" class="text-2xl sm:text-3xl font-extrabold text-indigo-400 mt-1">$2,024</p>
+              <p class="text-xs text-slate-300 mt-1">Gross-margin adjusted</p>
+            </div>
+            <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/70">
+              <p class="text-xs text-slate-400">LTV : CAC Ratio</p>
+              <p id="res-saas-ratio" class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">3.89x</p>
+              <p class="text-xs text-slate-300 mt-1">Benchmark: 3.0x–5.0x</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/60 space-y-2.5 text-sm">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Average Customer Lifespan:</span>
+              <span id="res-saas-life" class="font-bold text-white">31.3 months</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">CAC Payback Period:</span>
+              <span id="res-saas-payback" class="font-bold text-amber-300">8.0 months</span>
+            </div>
+            <div class="flex justify-between pt-2 border-t border-slate-700/70">
+              <span class="text-slate-300 font-medium">Annualized Logo Retention:</span>
+              <span id="res-saas-ret" class="font-extrabold text-emerald-400">67.7%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TOOL 3: EV HOME CHARGING VS PETROL SAVINGS CALCULATOR               -->
+    <!-- =================================================================== -->
+    <section id="panel-ev-savings" class="tool-panel hidden space-y-6">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-50 border border-sky-200 text-sky-700 text-xs font-semibold mb-2.5">
+          Off-Peak Home Tariff vs. Fuel Comparison
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">EV Home Charging vs. Petrol Savings Calculator</h1>
+        <p class="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+          Compare annual home EV charging costs on off-peak electricity tariffs against petrol/gasoline fuel costs, supporting both US Gallons and UK Litres.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-base font-bold text-slate-900">1. Driving &amp; Energy Tariff Inputs</h2>
+            <button type="button" onclick="resetEv()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700 px-2 py-1 rounded-lg hover:bg-indigo-50">Reset</button>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="ev-miles" class="block text-xs font-semibold text-slate-700 mb-1.5">Annual Mileage (miles/year)</label>
+              <input type="number" id="ev-miles" value="12000" min="500" max="150000" step="500" oninput="calcEv()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+            </div>
+
+            <div>
+              <label for="ev-eff" class="block text-xs font-semibold text-slate-700 mb-1.5">EV Efficiency (miles per kWh)</label>
+              <input type="number" id="ev-eff" value="3.7" min="1.5" max="6.5" step="0.1" oninput="calcEv()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+              <p class="text-[11px] text-slate-400 mt-1">Sedan/Crossover avg: 3.5–4.0 mi/kWh</p>
+            </div>
+
+            <div>
+              <label for="ev-rate" class="block text-xs font-semibold text-slate-700 mb-1.5">Home Off-Peak Electricity Rate (<span class="curr-sym">$</span>/kWh)</label>
+              <input type="number" id="ev-rate" value="0.09" min="0.01" max="1.50" step="0.01" oninput="calcEv()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+            </div>
+
+            <div>
+              <label for="ev-mpg" class="block text-xs font-semibold text-slate-700 mb-1.5">Comparable Petrol / Gas MPG</label>
+              <input type="number" id="ev-mpg" value="30" min="8" max="90" step="1" oninput="calcEv()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+            </div>
+
+            <div class="sm:col-span-2">
+              <label for="ev-fuel-price" class="block text-xs font-semibold text-slate-700 mb-1.5">Fuel Price &amp; Volume Unit</label>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <input type="number" id="ev-fuel-price" value="3.55" min="0.50" max="20.00" step="0.05" oninput="calcEv()" class="sm:col-span-1 rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+                <select id="ev-fuel-unit" onchange="toggleFuelUnitPreset()" class="sm:col-span-2 rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
+                  <option value="us_gal" selected>Per US Gallon (3.785 L)</option>
+                  <option value="uk_litre">Per Litre (UK Imperial MPG = 4.546 L/gal)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 bg-slate-900 text-white rounded-2xl p-5 sm:p-6 shadow-md space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-sky-400">EV vs. Petrol Fuel Breakdown</span>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-sky-500/20 text-sky-300">90% Wall Eff.</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3.5">
+            <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/70">
+              <p class="text-xs text-slate-400">Net Annual Savings</p>
+              <p id="res-ev-annual" class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">$1,096</p>
+              <p id="res-ev-monthly" class="text-xs text-slate-300 mt-1">$91 / month saved</p>
+            </div>
+            <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/70">
+              <p class="text-xs text-slate-400">5-Year Cumulative</p>
+              <p id="res-ev-5yr" class="text-2xl sm:text-3xl font-extrabold text-amber-300 mt-1">$5,480</p>
+              <p class="text-xs text-slate-300 mt-1">Total fuel savings</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/60 space-y-2.5 text-sm">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Annual EV Electricity Cost:</span>
+              <span id="res-ev-elec" class="font-bold text-white">$324 / yr</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Annual Petrol / Gas Cost:</span>
+              <span id="res-ev-petrol" class="font-bold text-rose-300">$1,420 / yr</span>
+            </div>
+            <div class="flex justify-between pt-2 border-t border-slate-700/70">
+              <span class="text-slate-300 font-medium">Energy Needed From Wall:</span>
+              <span id="res-ev-kwh" class="font-extrabold text-sky-300">3,604 kWh / yr</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TOOL 4: EXACT-KB IMAGE SIZE REDUCER & FORMAT CONVERTER              -->
+    <!-- =================================================================== -->
+    <section id="panel-image-reducer" class="tool-panel hidden space-y-6">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold mb-2.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          100% Private · Processed Locally in Your Browser
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Exact-KB Image Size Reducer &amp; Format Converter</h1>
+        <p class="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+          Compress JPG, PNG, or WebP photos down to an exact target KB limit (20KB, 50KB, 100KB, 200KB, or custom) for passport portals, visa applications, and fast websites—without uploading your photos to any server.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Left: Dropzone & Settings -->
+        <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-5">
+          <!-- Drag & Drop Zone -->
+          <div id="img-dropzone" onclick="document.getElementById('img-file-input').click()" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 bg-slate-50/70 hover:bg-indigo-50/40 rounded-2xl p-6 text-center cursor-pointer transition-all">
+            <input type="file" id="img-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleImageUpload(this.files[0])" />
+            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-3">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <p class="text-sm font-bold text-slate-900">Drop your JPG, PNG, or WebP image here</p>
+            <p class="text-xs text-slate-500 mt-1">or click to browse from your device · Zero server upload</p>
+          </div>
+
+          <!-- Target KB Presets -->
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-2">Target Max File Size (KB)</label>
+            <div class="flex flex-wrap gap-2 mb-2.5">
+              <button type="button" onclick="setTargetKb(20)" class="kb-preset px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 text-slate-700">20 KB</button>
+              <button type="button" onclick="setTargetKb(50)" class="kb-preset px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 text-slate-700">50 KB</button>
+              <button type="button" onclick="setTargetKb(100)" class="kb-preset px-3 py-1.5 rounded-lg text-xs font-semibold border border-indigo-500 bg-indigo-50 text-indigo-700">100 KB</button>
+              <button type="button" onclick="setTargetKb(200)" class="kb-preset px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 text-slate-700">200 KB</button>
+            </div>
+            <div class="flex items-center gap-2">
+              <input type="number" id="img-target-kb" value="100" min="5" max="10240" step="5" onchange="compressCurrentImage()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+              <span class="text-xs font-bold text-slate-500 shrink-0">KB Max</span>
+            </div>
+          </div>
+
+          <!-- Output Format & Max Dimension -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="img-format" class="block text-xs font-semibold text-slate-700 mb-1.5">Output Format</label>
+              <select id="img-format" onchange="compressCurrentImage()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 bg-white focus:border-indigo-500 outline-none">
+                <option value="image/jpeg" selected>JPEG (.jpg) — Best for exact KB</option>
+                <option value="image/webp">WebP (.webp) — Ultra-small web</option>
+                <option value="image/png">PNG (.png) — Lossless / Scales size</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="img-max-dim" class="block text-xs font-semibold text-slate-700 mb-1.5">Max Width / Height (px)</label>
+              <select id="img-max-dim" onchange="compressCurrentImage()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 bg-white focus:border-indigo-500 outline-none">
+                <option value="0" selected>Keep Original Dimensions</option>
+                <option value="1920">1920 px (Full HD)</option>
+                <option value="1280">1280 px (Standard Web)</option>
+                <option value="800">800 px (Portal / Form)</option>
+                <option value="413">413 px (Passport Photo)</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="button" onclick="compressCurrentImage()" class="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold transition">
+            Re-Compress Image
+          </button>
+        </div>
+
+        <!-- Right: Side-by-Side Preview & Download -->
+        <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-base font-bold text-slate-900">Compression Result &amp; Preview</h2>
+            <span id="img-status-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600">Waiting for image</span>
+          </div>
+
+          <!-- Metrics Strip -->
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-200/80">
+              <p class="text-[11px] text-slate-500">Original Size</p>
+              <p id="img-orig-size" class="text-sm sm:text-base font-extrabold text-slate-800 mt-0.5">—</p>
+              <p id="img-orig-dim" class="text-[10px] text-slate-400 mt-0.5">—</p>
+            </div>
+            <div class="bg-emerald-50/70 rounded-xl p-3 border border-emerald-200">
+              <p class="text-[11px] text-emerald-700 font-medium">Compressed Size</p>
+              <p id="img-new-size" class="text-sm sm:text-base font-extrabold text-emerald-700 mt-0.5">—</p>
+              <p id="img-new-dim" class="text-[10px] text-emerald-600 mt-0.5">—</p>
+            </div>
+            <div class="bg-indigo-50/70 rounded-xl p-3 border border-indigo-200">
+              <p class="text-[11px] text-indigo-700 font-medium">Saved</p>
+              <p id="img-saved-pct" class="text-sm sm:text-base font-extrabold text-indigo-700 mt-0.5">—</p>
+              <p id="img-quality-used" class="text-[10px] text-indigo-500 mt-0.5">Binary-search Q</p>
+            </div>
+          </div>
+
+          <!-- Side-by-Side Image Preview Boxes -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="space-y-1.5">
+              <span class="block text-[11px] font-semibold text-slate-500 text-center">Original</span>
+              <div class="h-44 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center overflow-hidden p-2">
+                <img id="img-preview-orig" alt="Original preview" class="hidden max-h-full max-w-full object-contain rounded-lg" />
+                <span id="img-placeholder-orig" class="text-xs text-slate-400">No file selected</span>
+              </div>
+            </div>
+            <div class="space-y-1.5">
+              <span class="block text-[11px] font-semibold text-emerald-700 text-center">Compressed Output</span>
+              <div class="h-44 rounded-xl bg-slate-100 border border-emerald-200 flex items-center justify-center overflow-hidden p-2">
+                <img id="img-preview-new" alt="Compressed preview" class="hidden max-h-full max-w-full object-contain rounded-lg" />
+                <span id="img-placeholder-new" class="text-xs text-slate-400">Output preview</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dedicated Download Button (Well away from any ad slot) -->
+          <div class="pt-2">
+            <button type="button" id="btn-download-img" disabled onclick="downloadCompressedImage()" class="w-full py-3.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span id="btn-download-img-label">Download Compressed Image</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TOOL 5: CLIENT-SIDE PDF MERGER & PAGE REORDERER                     -->
+    <!-- =================================================================== -->
+    <section id="panel-pdf-merger" class="tool-panel hidden space-y-6">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold mb-2.5">
+          Zero-Upload Local PDF Engine (pdf-lib)
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Client-Side PDF Merger &amp; Page Reorderer</h1>
+        <p class="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+          Combine multiple PDF contracts, invoices, or bank statements into a single PDF document. Reorder files before merging—100% processed inside your browser memory so confidential documents never touch a server.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-6">
+        <!-- PDF Dropzone -->
+        <div id="pdf-dropzone" onclick="document.getElementById('pdf-file-input').click()" class="border-2 border-dashed border-slate-300 hover:border-rose-500 bg-slate-50/70 hover:bg-rose-50/30 rounded-2xl p-7 text-center cursor-pointer transition-all">
+          <input type="file" id="pdf-file-input" accept="application/pdf" multiple class="hidden" onchange="handlePdfFiles(this.files)" />
+          <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <p class="text-sm font-bold text-slate-900">Drop multiple PDF files here, or click to select</p>
+          <p class="text-xs text-slate-500 mt-1">Select 2 or more .pdf files · Encrypted/password-protected PDFs must be unlocked first</p>
+        </div>
+
+        <!-- File List & Reorder Controls -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-sm font-bold text-slate-900">Selected PDF Queue (<span id="pdf-total-files">0</span> files · <span id="pdf-total-pages">0</span> total pages)</h2>
+            <button type="button" onclick="clearPdfQueue()" class="text-xs font-semibold text-rose-600 hover:text-rose-700">Clear All</button>
+          </div>
+
+          <div id="pdf-queue-list" class="space-y-2">
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-xs text-slate-400">
+              No PDF files added yet. Add at least 2 PDFs above to reorder and merge.
+            </div>
+          </div>
+        </div>
+
+        <!-- Output Filename & Merge Action -->
+        <div class="pt-2 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-end gap-4">
+          <div class="flex-grow">
+            <label for="pdf-out-name" class="block text-xs font-semibold text-slate-700 mb-1.5">Output Merged Filename</label>
+            <input type="text" id="pdf-out-name" value="merged-document.pdf" class="w-full rounded-xl border border-slate-300 px-3.5 py-3 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+          </div>
+
+          <button type="button" id="btn-merge-pdf" disabled onclick="mergeAndDownloadPdfs()" class="sm:w-auto px-6 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+            </svg>
+            <span>Merge &amp; Download PDF</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TOOL 6: IMAGES TO PDF CONVERTER                                     -->
+    <!-- =================================================================== -->
+    <section id="panel-img-to-pdf" class="tool-panel hidden space-y-6">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-semibold mb-2.5">
+          Multi-Photo Document Builder · Local Canvas + pdf-lib
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Images to PDF Converter (JPG, PNG, WebP → PDF)</h1>
+        <p class="mt-2 text-sm sm:text-base text-slate-600 leading-relaxed">
+          Combine scanned receipts, ID pages, or photos into a single printable A4, US Letter, or native-sized PDF document locally in your browser.
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-6">
+        <!-- Dropzone -->
+        <div id="i2p-dropzone" onclick="document.getElementById('i2p-file-input').click()" class="border-2 border-dashed border-slate-300 hover:border-amber-500 bg-slate-50/70 hover:bg-amber-50/30 rounded-2xl p-7 text-center cursor-pointer transition-all">
+          <input type="file" id="i2p-file-input" accept="image/jpeg,image/png,image/webp" multiple class="hidden" onchange="handleI2pFiles(this.files)" />
+          <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <p class="text-sm font-bold text-slate-900">Drop multiple JPG, PNG, or WebP images here</p>
+          <p class="text-xs text-slate-500 mt-1">Each image becomes one PDF page in order</p>
+        </div>
+
+        <!-- Settings Bar -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label for="i2p-page-size" class="block text-xs font-semibold text-slate-700 mb-1.5">PDF Page Size</label>
+            <select id="i2p-page-size" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 bg-white focus:border-indigo-500 outline-none">
+              <option value="a4" selected>A4 (210 × 297 mm — UK/Global)</option>
+              <option value="letter">US Letter (8.5 × 11 in)</option>
+              <option value="fit">Fit Page to Exact Image Size</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="i2p-margin" class="block text-xs font-semibold text-slate-700 mb-1.5">Page Margin</label>
+            <select id="i2p-margin" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 bg-white focus:border-indigo-500 outline-none">
+              <option value="36" selected>Standard Margin (0.5 in / 12.7 mm)</option>
+              <option value="18">Narrow Margin (0.25 in)</option>
+              <option value="0">Zero Margin (Full Bleed)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="i2p-out-name" class="block text-xs font-semibold text-slate-700 mb-1.5">Output PDF Filename</label>
+            <input type="text" id="i2p-out-name" value="images-bundle.pdf" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 outline-none" />
+          </div>
+        </div>
+
+        <!-- Image Queue Preview -->
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-slate-700">Image Pages (<span id="i2p-count">0</span>)</span>
+            <button type="button" onclick="clearI2pQueue()" class="text-xs font-semibold text-rose-600 hover:text-rose-700">Clear Images</button>
+          </div>
+          <div id="i2p-list" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
+            <div class="col-span-full rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-xs text-slate-400">
+              No images selected yet.
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button type="button" id="btn-create-i2p" disabled onclick="convertImagesToPdf()" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+            <span>Convert &amp; Download PDF</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- ADSENSE BELOW-CONTENT RECTANGLE SLOT (min-height: 250px, >=44px gap) -->
+    <!-- =================================================================== -->
+    <div class="pt-6">
+      <div class="w-full min-h-[250px] bg-slate-100 border border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center text-center p-4">
+        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Advertisement · Below-Workspace Display Unit (336×280 / Responsive)</span>
+        <span class="text-xs text-slate-400 mt-1 max-w-md">Fixed 250px min-height prevents CLS · Separated by &gt;44px clearance from all interactive upload &amp; download buttons</span>
+      </div>
+    </div>
+
+    <!-- =================================================================== -->
+    <!-- RICH EDUCATIONAL GUIDE & FAQ (750+ Words for SEO & AdSense Depth)   -->
+    <!-- =================================================================== -->
+    <article class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 sm:p-10 space-y-8">
+      <div class="max-w-3xl">
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Methodology, Engineering Formulas &amp; Privacy Architecture</span>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">How PureWebKit Calculators &amp; Zero-Upload Browser Tools Work</h2>
+        <p class="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
+          PureWebKit is designed around two core principles: <strong>transparent mathematical formulas</strong> for financial and clean-energy planning, and <strong>100% client-side execution</strong> for image compression and PDF document processing. Every calculation and file transformation runs inside your browser's local memory without transmitting sensitive files or financial inputs to external cloud servers.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+        <div class="space-y-3">
+          <h3 class="text-base font-bold text-slate-900">1. Off-Grid Solar &amp; LiFePO4 Battery Sizing Math</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            When sizing an off-grid battery bank, nameplate amp-hours (Ah) cannot be drained completely without damaging cells. Lithium Iron Phosphate (<strong>LiFePO4</strong>) batteries safely deliver an <strong>80% Depth of Discharge (DoD)</strong> over 4,000+ cycles, whereas sealed AGM/Gel lead-acid batteries should not exceed <strong>50% DoD</strong>. We also divide daily AC watt-hours by a <strong>92% inverter conversion efficiency factor</strong> so real-world parasitic draw never leaves your system undersized.
+          </p>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 font-mono text-xs text-slate-800">
+            Battery Ah = ((Daily_Wh ÷ 0.92) × Autonomy_Days) ÷ (System_Volts × Safe_DoD)
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-bold text-slate-900">2. SaaS LTV, Churn &amp; CAC Payback Benchmarks</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            In subscription software businesses, raw revenue overstates customer value if hosting, support, and payment processing costs are ignored. PureWebKit computes <strong>Gross-Margin-Adjusted LTV</strong> by multiplying Average Revenue Per User (ARPU) by your Gross Margin percentage, divided by Monthly Logo Churn. Healthy venture-scale and bootstrapped SaaS businesses aim for an <strong>LTV:CAC ratio between 3.0x and 5.0x</strong> and a CAC payback window under 12 months.
+          </p>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 font-mono text-xs text-slate-800">
+            LTV = (ARPU × Gross_Margin%) ÷ Monthly_Churn% &nbsp;|&nbsp; Payback = CAC ÷ (ARPU × Margin%)
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-bold text-slate-900">3. EV Home Charging Efficiency &amp; Off-Peak Tariffs</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Electric vehicles draw roughly 10% more energy from a Level 2 home wallbox than reaches the battery pack due to onboard AC-to-DC rectifier losses and battery thermal management. Even after factoring in a <strong>90% charging efficiency</strong>, pairing overnight Time-of-Use (TOU) rates ($0.08–$0.11/kWh in the US or 7p/kWh on UK smart EV tariffs) reduces per-mile energy expenditure by 70% to 80% compared to petrol/gasoline vehicles.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-bold text-slate-900">4. How Exact-KB Compression &amp; Local PDF Merging Protect Privacy</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Traditional online file converters upload your passport photos, tax returns, or signed contracts to remote servers. PureWebKit eliminates that privacy risk. Our <strong>Exact-KB Image Reducer</strong> renders your photo onto an isolated HTML5 <code>&lt;canvas&gt;</code> element and runs an iterative binary search across compression quality levels until the resulting binary blob fits strictly underneath your chosen KB ceiling. Similarly, our <strong>PDF Merger</strong> and <strong>Images-to-PDF Converter</strong> assemble raw PDF byte structures directly in browser RAM via <code>pdf-lib</code>.
+          </p>
+        </div>
+      </div>
+
+      <!-- Frequently Asked Questions -->
+      <div class="border-t border-slate-200 pt-6 space-y-4">
+        <h3 class="text-lg font-bold text-slate-900">Frequently Asked Questions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900">Are my PDFs or images ever uploaded to a server?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+              No. All image resizing, KB compression, PDF page merging, and image-to-PDF conversions execute 100% locally on your device. If you disconnect from Wi-Fi after loading this page, every tool continues to work offline.
+            </p>
+          </div>
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900">Why does PNG ignore quality sliders when targeting exact KB?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+              PNG is a lossless image format, so browsers ignore JPEG-style quality parameters. When PNG is selected and a file exceeds your KB target, PureWebKit automatically downscales pixel dimensions proportionally until the PNG meets your target size—or you can switch output format to JPEG/WebP for maximum sharpness at 20KB–100KB.
+            </p>
+          </div>
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900">Does the currency switcher convert my custom inputs?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+              Switching between USD ($) and GBP (£) updates all currency labels and converts hardware benchmark estimates (like solar/battery equipment cost) automatically while preserving any custom tariff, ARPU, or fuel prices you typed in.
+            </p>
+          </div>
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900">Can I bookmark or share a direct link to one specific tool?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
+              Yes. Each calculator and file utility updates the URL hash (for example, <code>#image-reducer</code> or <code>#pdf-merger</code>). Click the <strong>Share</strong> button in the top bar to copy the direct link.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- ADSENSE-MANDATORY TRUST & COMPLIANCE FOOTER                           -->
+  <!-- ===================================================================== -->
+  <footer class="bg-white border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div>
+          <span class="font-extrabold text-base text-slate-900">PureWeb<span class="text-indigo-600">Kit</span></span>
+          <p class="text-xs text-slate-500 mt-1 max-w-md">
+            Fast, privacy-first browser calculators and local file utilities. Zero server uploads, zero registration required.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-4 sm:gap-6 text-xs font-semibold text-slate-600">
+          <button type="button" onclick="openLegalModal('about')" class="hover:text-indigo-600 transition">About</button>
+          <button type="button" onclick="openLegalModal('privacy')" class="hover:text-indigo-600 transition">Privacy Policy</button>
+          <button type="button" onclick="openLegalModal('disclaimer')" class="hover:text-indigo-600 transition">Disclaimer</button>
+          <button type="button" onclick="openLegalModal('contact')" class="hover:text-indigo-600 transition">Contact</button>
+        </div>
+      </div>
+
+      <div class="mt-6 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
+        <p>© 2026 PureWebKit. All rights reserved. Deployed on Cloudflare Pages Edge.</p>
+        <p>100% Client-Side Execution · Your files and financial data never leave your browser.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- LEGAL & ADSENSE COMPLIANCE MODAL                                      -->
+  <!-- ===================================================================== -->
+  <div id="legal-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4" role="dialog" aria-modal="true">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-6 sm:p-7 shadow-2xl border border-slate-200 max-h-[85vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <h3 id="modal-title" class="text-lg font-bold text-slate-900">Information</h3>
+        <button type="button" onclick="closeLegalModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100" aria-label="Close modal">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div id="modal-body" class="text-sm text-slate-600 space-y-3 leading-relaxed"></div>
+      <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+        <button type="button" onclick="closeLegalModal()" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // GLOBAL APPLICATION STATE & HASH ROUTING
+    // =========================================================================
+    const appState = {
+      currency: 'USD',
+      symbol: '$',
+      fxUsdToGbp: 0.79,
+      activeTool: 'solar-battery',
+      activeCategory: 'all'
+    };
+
+    const ALL_TOOLS = [
+      'solar-battery',
+      'saas-metrics',
+      'ev-savings',
+      'image-reducer',
+      'pdf-merger',
+      'img-to-pdf'
+    ];
+
+    function formatCurrency(amount, applyFx = false) {
+      const val = applyFx && appState.currency === 'GBP' ? amount * appState.fxUsdToGbp : amount;
+      return appState.symbol + Math.round(val).toLocaleString('en-US');
+    }
+
+    function setCurrency(curr) {
+      appState.currency = curr;
+      appState.symbol = curr === 'GBP' ? '£' : '$';
+
+      const btnUsd = document.getElementById('btn-usd');
+      const btnGbp = document.getElementById('btn-gbp');
+      if (curr === 'USD') {
+        btnUsd.className = 'px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all bg-white text-slate-900 shadow-xs';
+        btnGbp.className = 'px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-600 hover:text-slate-900';
+      } else {
+        btnGbp.className = 'px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all bg-white text-slate-900 shadow-xs';
+        btnUsd.className = 'px-2.5 py-1.5 text-xs font-semibold rounded-lg transition-all text-slate-600 hover:text-slate-900';
+      }
+
+      document.querySelectorAll('.curr-sym').forEach(el => {
+        el.textContent = appState.symbol;
+      });
+
+      calcSolarBattery();
+      calcSaas();
+      calcEv();
+    }
+
+    function filterCategory(category) {
+      appState.activeCategory = category;
+
+      // Update category pills
+      document.querySelectorAll('.cat-pill').forEach(pill => {
+        const isSelected = pill.getAttribute('data-cat') === category;
+        pill.className = isSelected
+          ? 'cat-pill flex-1 md:flex-none px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-white text-slate-900 shadow-xs'
+          : 'cat-pill flex-1 md:flex-none px-3 py-1.5 rounded-lg text-xs font-semibold transition-all text-slate-600 hover:text-slate-900';
+      });
+
+      // Show/hide tabs in strip
+      let firstVisibleTool = null;
+      let activeStillVisible = false;
+
+      document.querySelectorAll('.tool-tab').forEach(tab => {
+        const group = tab.getAttribute('data-group');
+        const toolId = tab.getAttribute('data-tool');
+        const visible = category === 'all' || group === category;
+        tab.classList.toggle('hidden', !visible);
+        tab.classList.toggle('inline-flex', visible);
+
+        if (visible && !firstVisibleTool) firstVisibleTool = toolId;
+        if (visible && toolId === appState.activeTool) activeStillVisible = true;
+      });
+
+      if (!activeStillVisible && firstVisibleTool) {
+        switchTool(firstVisibleTool);
+      }
+    }
+
+    function switchTool(toolId, event) {
+      if (event) event.preventDefault();
+      if (!ALL_TOOLS.includes(toolId)) toolId = 'solar-battery';
+
+      appState.activeTool = toolId;
+      if (window.location.hash !== '#' + toolId) {
+        history.replaceState(null, '', '#' + toolId);
+      }
+
+      document.querySelectorAll('.tool-panel').forEach(panel => {
+        panel.classList.add('hidden');
+      });
+      const targetPanel = document.getElementById('panel-' + toolId);
+      if (targetPanel) targetPanel.classList.remove('hidden');
+
+      document.querySelectorAll('.tool-tab').forEach(tab => {
+        const isTarget = tab.getAttribute('data-tool') === toolId;
+        const isHidden = tab.classList.contains('hidden');
+        const displayCls = isHidden ? 'hidden' : 'inline-flex';
+        tab.className = isTarget
+          ? `tool-tab shrink-0 ${displayCls} items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all bg-indigo-600 text-white shadow-xs`
+          : `tool-tab shrink-0 ${displayCls} items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900`;
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 2800);
+    }
+
+    function copyShareUrl() {
+      const tempInput = document.createElement('input');
+      tempInput.value = window.location.href;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast('Direct tool link copied to clipboard!');
+      } catch (err) {
+        showToast('Please copy the URL from your browser address bar.');
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    // =========================================================================
+    // TOOL 1: OFF-GRID SOLAR & LiFePO4 BATTERY SIZING CALCULATOR
+    // =========================================================================
+    function applySbPreset() {
+      document.getElementById('sb-psh').value = document.getElementById('sb-region').value;
+      calcSolarBattery();
+    }
+
+    function calcSolarBattery() {
+      const loadWh = Math.max(0, parseFloat(document.getElementById('sb-load').value) || 0);
+      const days = Math.max(0.1, parseFloat(document.getElementById('sb-days').value) || 1);
+      const volt = parseFloat(document.getElementById('sb-volt').value) || 48;
+      const dod = parseFloat(document.getElementById('sb-chem').value) || 0.80;
+      const psh = Math.max(0.5, parseFloat(document.getElementById('sb-psh').value) || 4.6);
+
+      // Account for 92% inverter efficiency
+      const dailyDcWh = loadWh / 0.92;
+      const usableWh = dailyDcWh * days;
+      const totalNameplateWh = usableWh / dod;
+      const requiredAh = totalNameplateWh / volt;
+      const totalKwh = totalNameplateWh / 1000;
+      const usableKwh = usableWh / 1000;
+
+      // Solar Array sizing (80% real-world PV & MPPT derating)
+      const minSolarWatts = dailyDcWh / (psh * 0.80);
+      const panelCount = Math.max(1, Math.ceil(minSolarWatts / 400));
+      const installedSolarW = panelCount * 400;
+
+      // MPPT Controller sizing with 1.25x NEC safety factor
+      const rawMpptAmps = installedSolarW / volt;
+      const safeMpptAmps = rawMpptAmps * 1.25;
+      const stdMppts = [20, 30, 45, 60, 85, 100, 150, 200];
+      const recMppt = stdMppts.find(a => a >= safeMpptAmps) || Math.ceil(safeMpptAmps / 50) * 50;
+
+      // Estimated hardware cost (USD base -> converts to GBP if selected)
+      const batCostPerKwh = dod >= 0.8 ? 240 : 165;
+      const estCostUsd = (totalKwh * batCostPerKwh) + (installedSolarW * 0.65) + (recMppt * 4.5);
+
+      document.getElementById('sb-badge').textContent = `${volt}V ${dod >= 0.8 ? 'LiFePO4' : 'AGM'}`;
+      document.getElementById('res-sb-ah').textContent = `${Math.ceil(requiredAh).toLocaleString()} Ah`;
+      document.getElementById('res-sb-kwh').textContent = `${totalKwh.toFixed(2)} kWh total`;
+      document.getElementById('res-sb-solar').textContent = `${Math.ceil(minSolarWatts).toLocaleString()} W`;
+      document.getElementById('res-sb-panels').textContent = `${panelCount} × 400W panels`;
+      document.getElementById('res-sb-mppt').textContent = `${recMppt} Amp MPPT`;
+      document.getElementById('res-sb-usable').textContent = `${usableKwh.toFixed(2)} kWh`;
+      document.getElementById('res-sb-cost').textContent = formatCurrency(estCostUsd, true);
+    }
+
+    function resetSolarBattery() {
+      document.getElementById('sb-load').value = 4800;
+      document.getElementById('sb-days').value = 2;
+      document.getElementById('sb-volt').value = '48';
+      document.getElementById('sb-chem').value = '0.80';
+      document.getElementById('sb-region').value = '4.6';
+      document.getElementById('sb-psh').value = 4.6;
+      calcSolarBattery();
+    }
+
+    // =========================================================================
+    // TOOL 2: SaaS CHURN, LTV & CAC PAYBACK CALCULATOR
+    // =========================================================================
+    function calcSaas() {
+      const arpu = Math.max(0, parseFloat(document.getElementById('saas-arpu').value) || 0);
+      const margin = Math.min(1, Math.max(0.01, (parseFloat(document.getElementById('saas-margin').value) || 80) / 100));
+      const churn = Math.min(1, Math.max(0.0005, (parseFloat(document.getElementById('saas-churn').value) || 3.2) / 100));
+      const cac = Math.max(0, parseFloat(document.getElementById('saas-cac').value) || 0);
+
+      const lifespanMonths = 1 / churn;
+      const monthlyGrossProfit = arpu * margin;
+      const ltv = monthlyGrossProfit * lifespanMonths;
+      const ratio = cac > 0 ? ltv / cac : 0;
+      const paybackMonths = monthlyGrossProfit > 0 ? cac / monthlyGrossProfit : 0;
+      const annualRetentionPct = Math.pow(1 - churn, 12) * 100;
+
+      const badge = document.getElementById('res-saas-badge');
+      if (ratio < 3) {
+        badge.textContent = `${ratio.toFixed(1)}x · Needs Work`;
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-500/20 text-rose-300';
+      } else if (ratio <= 5) {
+        badge.textContent = `${ratio.toFixed(1)}x · Healthy`;
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300';
+      } else {
+        badge.textContent = `${ratio.toFixed(1)}x · Scale Ready`;
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/20 text-amber-300';
+      }
+
+      document.getElementById('res-saas-ltv').textContent = formatCurrency(ltv, false);
+      document.getElementById('res-saas-ratio').textContent = `${ratio.toFixed(2)}x`;
+      document.getElementById('res-saas-life').textContent = `${lifespanMonths.toFixed(1)} months`;
+      document.getElementById('res-saas-payback').textContent = `${paybackMonths.toFixed(1)} months`;
+      document.getElementById('res-saas-ret').textContent = `${annualRetentionPct.toFixed(1)}%`;
+    }
+
+    function resetSaas() {
+      document.getElementById('saas-arpu').value = 79;
+      document.getElementById('saas-margin').value = 82;
+      document.getElementById('saas-churn').value = 3.2;
+      document.getElementById('saas-cac').value = 520;
+      calcSaas();
+    }
+
+    // =========================================================================
+    // TOOL 3: EV HOME CHARGING VS PETROL SAVINGS CALCULATOR
+    // =========================================================================
+    function toggleFuelUnitPreset() {
+      const unit = document.getElementById('ev-fuel-unit').value;
+      const priceInput = document.getElementById('ev-fuel-price');
+      if (unit === 'uk_litre' && parseFloat(priceInput.value) > 2.5) {
+        priceInput.value = '1.42';
+      } else if (unit === 'us_gal' && parseFloat(priceInput.value) < 2.5) {
+        priceInput.value = '3.55';
+      }
+      calcEv();
+    }
+
+    function calcEv() {
+      const miles = Math.max(0, parseFloat(document.getElementById('ev-miles').value) || 0);
+      const eff = Math.max(0.5, parseFloat(document.getElementById('ev-eff').value) || 3.7);
+      const elecRate = Math.max(0, parseFloat(document.getElementById('ev-rate').value) || 0.09);
+      const mpg = Math.max(5, parseFloat(document.getElementById('ev-mpg').value) || 30);
+      const fuelPrice = Math.max(0, parseFloat(document.getElementById('ev-fuel-price').value) || 3.55);
+      const fuelUnit = document.getElementById('ev-fuel-unit').value;
+
+      // 90% onboard charging efficiency
+      const wallKwh = (miles / eff) / 0.90;
+      const annualEvCost = wallKwh * elecRate;
+
+      let annualPetrolCost = 0;
+      if (fuelUnit === 'us_gal') {
+        annualPetrolCost = (miles / mpg) * fuelPrice;
+      } else {
+        // UK Imperial Gallon = 4.54609 Litres
+        const imperialGallons = miles / mpg;
+        const litres = imperialGallons * 4.54609;
+        annualPetrolCost = litres * fuelPrice;
+      }
+
+      const annualSavings = annualPetrolCost - annualEvCost;
+      const monthlySavings = annualSavings / 12;
+      const fiveYrSavings = annualSavings * 5;
+
+      document.getElementById('res-ev-annual').textContent = formatCurrency(annualSavings, false);
+      document.getElementById('res-ev-monthly').textContent = `${formatCurrency(monthlySavings, false)} / month saved`;
+      document.getElementById('res-ev-5yr').textContent = formatCurrency(fiveYrSavings, false);
+      document.getElementById('res-ev-elec').textContent = `${formatCurrency(annualEvCost, false)} / yr`;
+      document.getElementById('res-ev-petrol').textContent = `${formatCurrency(annualPetrolCost, false)} / yr`;
+      document.getElementById('res-ev-kwh').textContent = `${Math.round(wallKwh).toLocaleString()} kWh / yr`;
+    }
+
+    function resetEv() {
+      document.getElementById('ev-miles').value = 12000;
+      document.getElementById('ev-eff').value = 3.7;
+      document.getElementById('ev-rate').value = 0.09;
+      document.getElementById('ev-mpg').value = 30;
+      document.getElementById('ev-fuel-price').value = 3.55;
+      document.getElementById('ev-fuel-unit').value = 'us_gal';
+      calcEv();
+    }
+
+    // =========================================================================
+    // TOOL 4: EXACT-KB IMAGE SIZE REDUCER & FORMAT CONVERTER (CLIENT-SIDE)
+    // =========================================================================
+    const imgState = {
+      file: null,
+      imageObj: null,
+      origUrl: null,
+      compressedBlob: null,
+      compressedUrl: null,
+      outputFilename: 'compressed-image.jpg'
+    };
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes <= 0) return '0 KB';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function setTargetKb(kb) {
+      document.getElementById('img-target-kb').value = kb;
+      document.querySelectorAll('.kb-preset').forEach(btn => {
+        const isMatch = parseInt(btn.textContent, 10) === kb;
+        btn.className = isMatch
+          ? 'kb-preset px-3 py-1.5 rounded-lg text-xs font-semibold border border-indigo-500 bg-indigo-50 text-indigo-700'
+          : 'kb-preset px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 text-slate-700';
+      });
+      if (imgState.imageObj) compressCurrentImage();
+    }
+
+    function handleImageUpload(file) {
+      if (!file) return;
+      if (!file.type.startsWith('image/')) {
+        showToast('Please select a valid JPG, PNG, or WebP image.');
+        return;
+      }
+
+      imgState.file = file;
+      if (imgState.origUrl) URL.revokeObjectURL(imgState.origUrl);
+      imgState.origUrl = URL.createObjectURL(file);
+
+      const img = new Image();
+      img.onload = () => {
+        imgState.imageObj = img;
+        document.getElementById('img-orig-size').textContent = formatBytes(file.size);
+        document.getElementById('img-orig-dim').textContent = `${img.naturalWidth} × ${img.naturalHeight} px`;
+
+        const prevOrig = document.getElementById('img-preview-orig');
+        prevOrig.src = imgState.origUrl;
+        prevOrig.classList.remove('hidden');
+        document.getElementById('img-placeholder-orig').classList.add('hidden');
+
+        compressCurrentImage();
+      };
+      img.src = imgState.origUrl;
+    }
+
+    function canvasToBlobAsync(canvas, mimeType, quality) {
+      return new Promise(resolve => {
+        canvas.toBlob(blob => resolve(blob), mimeType, quality);
+      });
+    }
+
+    async function compressCurrentImage() {
+      if (!imgState.imageObj || !imgState.file) return;
+
+      const targetKb = Math.max(5, parseFloat(document.getElementById('img-target-kb').value) || 100);
+      const targetBytes = targetKb * 1024;
+      const mimeType = document.getElementById('img-format').value;
+      const maxDim = parseInt(document.getElementById('img-max-dim').value, 10) || 0;
+
+      document.getElementById('img-status-badge').textContent = 'Compressing...';
+
+      let width = imgState.imageObj.naturalWidth;
+      let height = imgState.imageObj.naturalHeight;
+
+      if (maxDim > 0 && (width > maxDim || height > maxDim)) {
+        const ratio = Math.min(maxDim / width, maxDim / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+      }
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      const drawScaled = (w, h) => {
+        canvas.width = w;
+        canvas.height = h;
+        if (mimeType === 'image/jpeg') {
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+        } else {
+          ctx.clearRect(0, 0, w, h);
+        }
+        ctx.drawImage(imgState.imageObj, 0, 0, w, h);
+      };
+
+      drawScaled(width, height);
+
+      let bestBlob = null;
+      let usedQualityLabel = 'Lossless';
+
+      if (mimeType === 'image/png') {
+        // PNG ignores quality; scale down dimensions iteratively if over targetBytes
+        bestBlob = await canvasToBlobAsync(canvas, 'image/png');
+        let scaleAttempts = 0;
+        while (bestBlob && bestBlob.size > targetBytes && scaleAttempts < 10 && width > 64 && height > 64) {
+          width = Math.round(width * 0.82);
+          height = Math.round(height * 0.82);
+          drawScaled(width, height);
+          bestBlob = await canvasToBlobAsync(canvas, 'image/png');
+          scaleAttempts++;
+        }
+        usedQualityLabel = 'PNG Auto-Scale';
+      } else {
+        // Binary search quality between 0.05 and 0.96 to hit exact target KB
+        let low = 0.05;
+        let high = 0.96;
+        let bestQ = 0.5;
+
+        for (let i = 0; i < 9; i++) {
+          const mid = (low + high) / 2;
+          const candidate = await canvasToBlobAsync(canvas, mimeType, mid);
+          if (!candidate) break;
+
+          if (candidate.size <= targetBytes) {
+            bestBlob = candidate;
+            bestQ = mid;
+            low = mid; // Try higher quality while staying under targetBytes
+          } else {
+            high = mid; // Too large, reduce quality
+          }
+        }
+
+        // If even quality 0.05 exceeds targetBytes, downscale dimensions & retry
+        let downscaleTries = 0;
+        while (!bestBlob && downscaleTries < 6 && width > 80 && height > 80) {
+          width = Math.round(width * 0.78);
+          height = Math.round(height * 0.78);
+          drawScaled(width, height);
+          const fallback = await canvasToBlobAsync(canvas, mimeType, 0.25);
+          if (fallback && fallback.size <= targetBytes) {
+            bestBlob = fallback;
+            bestQ = 0.25;
+            break;
+          }
+          bestBlob = fallback;
+          bestQ = 0.25;
+          downscaleTries++;
+        }
+
+        if (!bestBlob) {
+          bestBlob = await canvasToBlobAsync(canvas, mimeType, 0.1);
+          bestQ = 0.1;
+        }
+        usedQualityLabel = `Quality ${Math.round(bestQ * 100)}%`;
+      }
+
+      if (!bestBlob) return;
+
+      imgState.compressedBlob = bestBlob;
+      if (imgState.compressedUrl) URL.revokeObjectURL(imgState.compressedUrl);
+      imgState.compressedUrl = URL.createObjectURL(bestBlob);
+
+      const ext = mimeType === 'image/webp' ? 'webp' : (mimeType === 'image/png' ? 'png' : 'jpg');
+      const baseName = imgState.file.name.replace(/\.[^/.]+$/, '');
+      imgState.outputFilename = `${baseName}-${Math.round(bestBlob.size / 1024)}kb.${ext}`;
+
+      const savedPct = Math.max(0, ((imgState.file.size - bestBlob.size) / imgState.file.size) * 100);
+
+      document.getElementById('img-new-size').textContent = formatBytes(bestBlob.size);
+      document.getElementById('img-new-dim').textContent = `${width} × ${height} px`;
+      document.getElementById('img-saved-pct').textContent = `${savedPct.toFixed(0)}%`;
+      document.getElementById('img-quality-used').textContent = usedQualityLabel;
+
+      const prevNew = document.getElementById('img-preview-new');
+      prevNew.src = imgState.compressedUrl;
+      prevNew.classList.remove('hidden');
+      document.getElementById('img-placeholder-new').classList.add('hidden');
+
+      const statusBadge = document.getElementById('img-status-badge');
+      statusBadge.textContent = bestBlob.size <= targetBytes ? `Ready · Under ${targetKb} KB` : 'Min size reached';
+      statusBadge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800';
+
+      const dlBtn = document.getElementById('btn-download-img');
+      dlBtn.disabled = false;
+      document.getElementById('btn-download-img-label').textContent = `Download (${formatBytes(bestBlob.size)})`;
+    }
+
+    function downloadCompressedImage() {
+      if (!imgState.compressedUrl) return;
+      const a = document.createElement('a');
+      a.href = imgState.compressedUrl;
+      a.download = imgState.outputFilename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast(`Downloaded ${imgState.outputFilename}`);
+    }
+
+    // =========================================================================
+    // TOOL 5: CLIENT-SIDE PDF MERGER & PAGE REORDERER (pdf-lib)
+    // =========================================================================
+    const pdfQueue = []; // { id, name, size, pageCount, arrayBuffer }
+
+    async function handlePdfFiles(fileList) {
+      if (!fileList || fileList.length === 0) return;
+      if (typeof PDFLib === 'undefined') {
+        showToast('PDF engine still loading — please try again in a second.');
+        return;
+      }
+
+      for (const file of Array.from(fileList)) {
+        if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
+          showToast(`Skipped "${file.name}" (not a PDF).`);
+          continue;
+        }
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+          pdfQueue.push({
+            id: Math.random().toString(36).slice(2, 9),
+            name: file.name,
+            size: file.size,
+            pageCount: pdfDoc.getPageCount(),
+            arrayBuffer
+          });
+        } catch (err) {
+          showToast(`Could not read "${file.name}" — it may be password-protected.`);
+        }
+      }
+
+      document.getElementById('pdf-file-input').value = '';
+      renderPdfQueue();
+    }
+
+    function movePdfItem(index, direction) {
+      const targetIdx = index + direction;
+      if (targetIdx < 0 || targetIdx >= pdfQueue.length) return;
+      const temp = pdfQueue[index];
+      pdfQueue[index] = pdfQueue[targetIdx];
+      pdfQueue[targetIdx] = temp;
+      renderPdfQueue();
+    }
+
+    function removePdfItem(index) {
+      pdfQueue.splice(index, 1);
+      renderPdfQueue();
+    }
+
+    function clearPdfQueue() {
+      pdfQueue.length = 0;
+      renderPdfQueue();
+    }
+
+    function renderPdfQueue() {
+      const container = document.getElementById('pdf-queue-list');
+      const totalFilesEl = document.getElementById('pdf-total-files');
+      const totalPagesEl = document.getElementById('pdf-total-pages');
+      const mergeBtn = document.getElementById('btn-merge-pdf');
+
+      const totalPages = pdfQueue.reduce((sum, item) => sum + item.pageCount, 0);
+      totalFilesEl.textContent = pdfQueue.length;
+      totalPagesEl.textContent = totalPages;
+      mergeBtn.disabled = pdfQueue.length < 2;
+
+      if (pdfQueue.length === 0) {
+        container.innerHTML = `
+          <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-xs text-slate-400">
+            No PDF files added yet. Add at least 2 PDFs above to reorder and merge.
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = pdfQueue.map((item, idx) => `
+        <div class="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50/70 px-3.5 py-2.5">
+          <div class="flex items-center gap-3 min-w-0">
+            <span class="w-6 h-6 rounded-lg bg-rose-100 text-rose-700 text-xs font-extrabold flex items-center justify-center shrink-0">${idx + 1}</span>
+            <div class="min-w-0">
+              <p class="text-xs sm:text-sm font-bold text-slate-900 truncate">${escapeHtml(item.name)}</p>
+              <p class="text-[11px] text-slate-500">${item.pageCount} page${item.pageCount > 1 ? 's' : ''} · ${formatBytes(item.size)}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1 shrink-0">
+            <button type="button" onclick="movePdfItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Move Up" class="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-35">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" /></svg>
+            </button>
+            <button type="button" onclick="movePdfItem(${idx}, 1)" ${idx === pdfQueue.length - 1 ? 'disabled' : ''} title="Move Down" class="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-35">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+            </button>
+            <button type="button" onclick="removePdfItem(${idx})" title="Remove" class="p-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 ml-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function mergeAndDownloadPdfs() {
+      if (pdfQueue.length < 2) return;
+      const btn = document.getElementById('btn-merge-pdf');
+      btn.disabled = true;
+
+      try {
+        const mergedPdf = await PDFLib.PDFDocument.create();
+        for (const item of pdfQueue) {
+          const srcDoc = await PDFLib.PDFDocument.load(item.arrayBuffer);
+          const copiedPages = await mergedPdf.copyPages(srcDoc, srcDoc.getPageIndices());
+          copiedPages.forEach(page => mergedPdf.addPage(page));
+        }
+
+        const mergedBytes = await mergedPdf.save();
+        const blob = new Blob([mergedBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+
+        let outName = (document.getElementById('pdf-out-name').value || 'merged-document.pdf').trim();
+        if (!outName.toLowerCase().endsWith('.pdf')) outName += '.pdf';
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = outName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+        showToast(`Merged ${pdfQueue.length} PDFs (${mergedPdf.getPageCount()} pages)!`);
+      } catch (err) {
+        showToast('Error merging PDFs. Ensure none are encrypted.');
+      } finally {
+        btn.disabled = pdfQueue.length < 2;
+      }
+    }
+
+    // =========================================================================
+    // TOOL 6: IMAGES TO PDF CONVERTER (CLIENT-SIDE)
+    // =========================================================================
+    const i2pQueue = []; // { name, dataUrl, width, height }
+
+    function handleI2pFiles(fileList) {
+      if (!fileList || fileList.length === 0) return;
+
+      Array.from(fileList).forEach(file => {
+        if (!file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = new Image();
+          img.onload = () => {
+            i2pQueue.push({
+              name: file.name,
+              dataUrl: e.target.result,
+              width: img.naturalWidth,
+              height: img.naturalHeight
+            });
+            renderI2pQueue();
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      document.getElementById('i2p-file-input').value = '';
+    }
+
+    function removeI2pItem(idx) {
+      i2pQueue.splice(idx, 1);
+      renderI2pQueue();
+    }
+
+    function clearI2pQueue() {
+      i2pQueue.length = 0;
+      renderI2pQueue();
+    }
+
+    function renderI2pQueue() {
+      const container = document.getElementById('i2p-list');
+      document.getElementById('i2p-count').textContent = i2pQueue.length;
+      document.getElementById('btn-create-i2p').disabled = i2pQueue.length === 0;
+
+      if (i2pQueue.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-xs text-slate-400">
+            No images selected yet.
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = i2pQueue.map((item, idx) => `
+        <div class="relative group rounded-xl border border-slate-200 bg-slate-50 p-2 flex flex-col items-center">
+          <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded bg-slate-900/80 text-white text-[10px] font-bold">P.${idx + 1}</span>
+          <button type="button" onclick="removeI2pItem(${idx})" title="Remove image" class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-rose-600 text-white text-xs flex items-center justify-center opacity-90 hover:opacity-100">×</button>
+          <img src="${item.dataUrl}" alt="${escapeHtml(item.name)}" class="h-24 w-full object-contain rounded-lg" />
+          <p class="text-[10px] text-slate-600 truncate w-full text-center mt-1.5">${escapeHtml(item.name)}</p>
+        </div>
+      `).join('');
+    }
+
+    function imageToJpegBytes(dataUrl, w, h) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => {
+          const c = document.createElement('canvas');
+          c.width = w;
+          c.height = h;
+          const ctx = c.getContext('2d');
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          c.toBlob(async blob => {
+            const buf = await blob.arrayBuffer();
+            resolve(buf);
+          }, 'image/jpeg', 0.92);
+        };
+        img.src = dataUrl;
+      });
+    }
+
+    async function convertImagesToPdf() {
+      if (i2pQueue.length === 0 || typeof PDFLib === 'undefined') return;
+      const btn = document.getElementById('btn-create-i2p');
+      btn.disabled = true;
+
+      try {
+        const pageSizeMode = document.getElementById('i2p-page-size').value;
+        const margin = parseFloat(document.getElementById('i2p-margin').value) || 0;
+        const pdfDoc = await PDFLib.PDFDocument.create();
+
+        for (const item of i2pQueue) {
+          const jpgBytes = await imageToJpegBytes(item.dataUrl, item.width, item.height);
+          const embeddedImg = await pdfDoc.embedJpg(jpgBytes);
+
+          let pageW, pageH;
+          if (pageSizeMode === 'a4') {
+            pageW = 595.28;
+            pageH = 841.89;
+          } else if (pageSizeMode === 'letter') {
+            pageW = 612;
+            pageH = 792;
+          } else {
+            pageW = item.width + margin * 2;
+            pageH = item.height + margin * 2;
+          }
+
+          const page = pdfDoc.addPage([pageW, pageH]);
+          const availW = Math.max(10, pageW - margin * 2);
+          const availH = Math.max(10, pageH - margin * 2);
+          const scale = Math.min(availW / item.width, availH / item.height);
+
+          const drawW = item.width * scale;
+          const drawH = item.height * scale;
+          const x = (pageW - drawW) / 2;
+          const y = (pageH - drawH) / 2;
+
+          page.drawImage(embeddedImg, { x, y, width: drawW, height: drawH });
+        }
+
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const url = URL.createObjectURL(blob);
+
+        let outName = (document.getElementById('i2p-out-name').value || 'images-bundle.pdf').trim();
+        if (!outName.toLowerCase().endsWith('.pdf')) outName += '.pdf';
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = outName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+        showToast(`Created ${outName} (${i2pQueue.length} pages)!`);
+      } catch (err) {
+        showToast('Error creating PDF from images.');
+      } finally {
+        btn.disabled = i2pQueue.length === 0;
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // =========================================================================
+    // DRAG-AND-DROP LISTENERS FOR FILE TOOLS
+    // =========================================================================
+    function bindDropzone(zoneId, onFilesDropped) {
+      const zone = document.getElementById(zoneId);
+      if (!zone) return;
+      ['dragenter', 'dragover'].forEach(evt => {
+        zone.addEventListener(evt, e => {
+          e.preventDefault();
+          e.stopPropagation();
+          zone.classList.add('border-indigo-500', 'bg-indigo-50/50');
+        });
+      });
+      ['dragleave', 'drop'].forEach(evt => {
+        zone.addEventListener(evt, e => {
+          e.preventDefault();
+          e.stopPropagation();
+          zone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
+        });
+      });
+      zone.addEventListener('drop', e => {
+        if (e.dataTransfer && e.dataTransfer.files) {
+          onFilesDropped(e.dataTransfer.files);
+        }
+      });
+    }
+
+    // =========================================================================
+    // LEGAL & ADSENSE COMPLIANCE MODALS
+    // =========================================================================
+    const LEGAL_PAGES = {
+      about: {
+        title: 'About PureWebKit',
+        html: `
+          <p><strong>PureWebKit</strong> is a unified suite of online engineering calculators and local file utilities built for speed, accuracy, and user privacy.</p>
+          <p>Unlike legacy web utilities that upload your images and PDF documents to remote servers, PureWebKit runs 100% client-side inside your web browser using HTML5 Canvas and WebAssembly/JavaScript libraries.</p>
+        `
+      },
+      privacy: {
+        title: 'Privacy Policy & Cookie Disclosure',
+        html: `
+          <p><strong>1. Zero-Upload File &amp; Data Guarantee:</strong> All images compressed with our Exact-KB Image Reducer, documents combined in our PDF Merger, and numbers entered into our calculators stay strictly inside your browser's local memory. We never upload, store, inspect, or transmit your files to any server.</p>
+          <p><strong>2. Google AdSense &amp; Advertising Cookies:</strong> To keep all tools free, PureWebKit displays advertisements served by Google AdSense. Third-party vendors, including Google, use cookies (such as the DoubleClick/DART cookie) to serve ads based on a user's prior visits to this website or other websites on the internet.</p>
+          <p><strong>3. Managing Ad Personalization:</strong> You may opt out of personalized advertising at any time via <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" class="text-indigo-600 underline">Google Ads Settings</a> or <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" class="text-indigo-600 underline">www.aboutads.info</a>.</p>
+        `
+      },
+      disclaimer: {
+        title: 'Engineering, Financial & Electrical Disclaimer',
+        html: `
+          <p><strong>Electrical &amp; Solar Safety:</strong> Outputs from the Off-Grid Solar &amp; LiFePO4 Battery Sizing Calculator are educational estimates based on standard NEC / BS 7671 guidelines. Always consult a licensed electrician or certified solar installer before purchasing or wiring high-current DC battery systems.</p>
+          <p><strong>Financial &amp; Tax Estimates:</strong> SaaS unit economics and EV fuel savings projections are illustrative models and do not constitute certified financial, accounting, or legal advice.</p>
+        `
+      },
+      contact: {
+        title: 'Contact PureWebKit',
+        html: `
+          <p>Have a feature request, bug report, or business inquiry? Reach our editorial and engineering team:</p>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-1.5 text-xs sm:text-sm">
+            <p><strong>Support &amp; Feedback:</strong> support@purewebkit.example.com</p>
+            <p><strong>Advertising &amp; Partnerships:</strong> partners@purewebkit.example.com</p>
+            <p><strong>Typical Response Time:</strong> 1–2 business days.</p>
+          </div>
+        `
+      }
+    };
+
+    function openLegalModal(key) {
+      const data = LEGAL_PAGES[key];
+      if (!data) return;
+      document.getElementById('modal-title').textContent = data.title;
+      document.getElementById('modal-body').innerHTML = data.html;
+      const modal = document.getElementById('legal-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeLegalModal() {
+      const modal = document.getElementById('legal-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // =========================================================================
+    // INITIALIZE APPLICATION ON WINDOW LOAD
+    // =========================================================================
+    window.addEventListener('hashchange', () => {
+      const hashId = window.location.hash.replace('#', '');
+      if (ALL_TOOLS.includes(hashId)) switchTool(hashId);
+    });
+
+    window.onload = function () {
+      const initialHash = window.location.hash.replace('#', '');
+      switchTool(ALL_TOOLS.includes(initialHash) ? initialHash : 'solar-battery');
+
+      // Initialize calculator defaults
+      calcSolarBattery();
+      calcSaas();
+      calcEv();
+
+      // Bind drag-and-drop file handlers
+      bindDropzone('img-dropzone', files => handleImageUpload(files[0]));
+      bindDropzone('pdf-dropzone', files => handlePdfFiles(files));
+      bindDropzone('i2p-dropzone', files => handleI2pFiles(files));
+    };
+  </script>
+</body>
+</html>
