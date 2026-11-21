@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EV Home Charging Cost &amp; Petrol Fuel Savings Calculator | SahilWebKit</title>
+  <meta name="description" content="Calculate electric vehicle home charging cost per session, monthly electricity spend, and annual savings vs. petrol/gasoline cars in USD ($) or GBP (£)." />
+  <link rel="canonical" href="https://sahilwebkit.com/ev-charging-calculator" />
+  <meta property="og:title" content="EV Home Charging Cost & Petrol Savings Calculator | SahilWebKit" />
+  <meta property="og:description" content="Compare EV off-peak home charging costs against petrol/gasoline fuel expenses and estimate Level 2 charger payback." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sahilwebkit.com/ev-charging-calculator" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "EV Home Charging Cost & Fuel Savings Calculator",
+        "url": "https://sahilwebkit.com/ev-charging-calculator",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "All",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "description": "Calculate EV kWh charging cost, charging time, and annual fuel savings compared to internal combustion vehicles."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Why does charging an EV take slightly more kWh than the battery capacity?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Onboard AC-to-DC inverters and battery thermal management lose roughly 8% to 12% of electricity as heat during Level 2 charging, so pulling 66 kWh from the wall typically stores around 60 kWh in the battery pack."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How much cheaper is off-peak home EV charging than petrol?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Charging overnight on an off-peak EV electricity tariff typically costs 65% to 80% less per mile driven than refueling a comparable 30 MPG petrol or gasoline car."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased flex flex-col min-h-screen">
+
+  <!-- STICKY MULTI-PAGE HEADER -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-xs">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3">
+      <div class="flex items-center justify-between gap-3">
+        <a href="/" class="flex items-center gap-2.5 group">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-emerald-600 flex items-center justify-center text-white font-extrabold shadow-sm">
+            SW
+          </div>
+          <div>
+            <span class="font-extrabold text-lg tracking-tight text-slate-900">Sahil<span class="text-indigo-600">WebKit</span></span>
+            <span class="hidden sm:block text-[11px] font-medium text-slate-500 -mt-1">Calculators &amp; Local File Studio</span>
+          </div>
+        </a>
+
+        <div class="flex items-center gap-2">
+          <div class="inline-flex rounded-xl bg-slate-100 p-1 border border-slate-200" role="group" aria-label="Currency selector">
+            <button type="button" id="btn-usd" onclick="setCurrency('USD')" class="px-2.5 py-1.5 text-xs font-bold rounded-lg bg-white text-indigo-700 shadow-xs transition">USD ($)</button>
+            <button type="button" id="btn-gbp" onclick="setCurrency('GBP')" class="px-2.5 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition">GBP (£)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6-PAGE NAVIGATION BAR -->
+      <nav aria-label="Primary tools" class="mt-3 pt-2.5 border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+        <a href="/" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">Solar &amp; Battery</a>
+        <a href="/saas-calculator" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">SaaS Metrics</a>
+        <a href="/ev-charging-calculator" aria-current="page" class="px-3.5 py-2 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">EV Savings</a>
+        <a href="/image-kb-reducer" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">Image KB Reducer</a>
+        <a href="/pdf-merger" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">PDF Merger</a>
+        <a href="/image-to-pdf" class="px-3.5 py-2 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100 whitespace-nowrap transition">Images to PDF</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-8">
+
+    <!-- AD SLOT 1: TOP LEADERBOARD (48px clearance below) -->
+    <div aria-label="Advertisement" class="mb-12 min-h-[90px] rounded-2xl border border-dashed border-slate-300 bg-slate-100/70 flex flex-col items-center justify-center text-center px-4 py-3">
+      <span class="text-[10px] font-bold tracking-widest uppercase text-slate-400">Advertisement · Top Leaderboard (728×90 / Responsive)</span>
+      <span class="text-xs text-slate-400 mt-0.5">Reserved 90px container prevents layout shift</span>
+    </div>
+
+    <!-- HERO HEADING -->
+    <section class="mb-8">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold mb-3">
+        Includes 90% Charger Efficiency &amp; Off-Peak Tariff Modeling
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+        EV Home Charging Cost &amp; Fuel Savings Calculator
+      </h1>
+      <p class="mt-2.5 text-base text-slate-600 max-w-3xl leading-relaxed">
+        Calculate exact electricity costs per charging session, overnight Level 2 charge duration, and annual savings versus petrol or gasoline vehicles.
+      </p>
+    </section>
+
+    <!-- CALCULATOR WORKSPACE -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      <!-- INPUTS -->
+      <div class="lg:col-span-6 bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-5">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <h2 class="text-base font-bold text-slate-900">1. Vehicle, Tariff &amp; Driving Inputs</h2>
+          <button type="button" onclick="resetEv()" class="text-xs font-semibold text-emerald-600 hover:text-emerald-800">Reset Defaults</button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="battery-kwh" class="block text-xs font-semibold text-slate-700 mb-1.5">EV Battery Size (kWh)</label>
+            <input type="number" id="battery-kwh" value="75" min="10" max="250" step="1" oninput="calcEv()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <p class="text-[11px] text-slate-400 mt-1">Usable pack capacity (e.g., 60–82 kWh)</p>
+          </div>
+
+          <div>
+            <label for="charge-pct" class="block text-xs font-semibold text-slate-700 mb-1.5">Charge Added per Session (%)</label>
+            <input type="number" id="charge-pct" value="60" min="5" max="100" step="5" oninput="calcEv()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <p class="text-[11px] text-slate-400 mt-1">e.g., 20% to 80% = 60% added</p>
+          </div>
+
+          <div>
+            <label for="elec-rate" class="block text-xs font-semibold text-slate-700 mb-1.5">Electricity Rate (<span class="curr-sym">$</span>/kWh)</label>
+            <input type="number" id="elec-rate" value="0.14" min="0.01" max="2" step="0.01" oninput="calcEv()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <p class="text-[11px] text-slate-400 mt-1">Off-peak night rate ($0.08–$0.16 / £0.07–£0.24)</p>
+          </div>
+
+          <div>
+            <label for="charger-kw" class="block text-xs font-semibold text-slate-700 mb-1.5">Home Charger Power (kW)</label>
+            <input type="number" id="charger-kw" value="7.4" min="1.4" max="22" step="0.1" oninput="calcEv()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <p class="text-[11px] text-slate-400 mt-1">32A Level 2 = 7.4 kW · 48A = 11.5 kW</p>
+          </div>
+
+          <div>
+            <label for="annual-miles" class="block text-xs font-semibold text-slate-700 mb-1.5">Annual Distance (Miles)</label>
+            <input type="number" id="annual-miles" value="12000" min="500" step="500" oninput="calcEv()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <p class="text-[11px] text-slate-400 mt-1">Average US/UK driver: 10,000–13,500 mi</p>
+          </div>
+
+          <div>
+            <label for="ev-eff" class="block text-xs font-semibold text-slate-700 mb-1.5">EV Efficiency (Miles / kWh)</label>
+            <input type="number" id="ev-eff" value="3.6" min="1.5" max="6" step="0.1" oninput="calcEv()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <p class="text-[11px] text-slate-400 mt-1">Sedan: 3.8–4.2 · SUV/Truck: 2.4–3.3</p>
+          </div>
+
+          <div>
+            <label for="gas-price" class="block text-xs font-semibold text-slate-700 mb-1.5">Petrol / Gas Price (<span class="curr-sym">$</span>/Gallon)</label>
+            <input type="number" id="gas-price" value="3.45" min="1" max="15" step="0.05" oninput="calcEv()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <p class="text-[11px] text-slate-400 mt-1">UK ~£6.20/imp gal · US ~$3.45/gal</p>
+          </div>
+
+          <div>
+            <label for="ice-mpg" class="block text-xs font-semibold text-slate-700 mb-1.5">Comparison Car MPG</label>
+            <input type="number" id="ice-mpg" value="28" min="8" max="80" step="1" oninput="calcEv()" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+            <p class="text-[11px] text-slate-400 mt-1">Miles per gallon of replaced petrol car</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <div class="lg:col-span-6 bg-slate-900 text-white rounded-2xl p-6 shadow-md space-y-5">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <h2 class="text-base font-bold">2. Charging Cost &amp; Annual Fuel Savings</h2>
+          <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">90% Wall-to-Battery Eff.</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/70">
+            <div class="text-xs text-slate-400 font-medium">Annual Fuel Savings</div>
+            <div id="out-savings" class="text-2xl sm:text-3xl font-extrabold text-emerald-400 mt-1">$960</div>
+            <div id="out-5yr" class="text-[11px] text-slate-400 mt-1">5-year savings: $4,800</div>
+          </div>
+
+          <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/70">
+            <div class="text-xs text-slate-400 font-medium">Cost per Charge Session</div>
+            <div id="out-session-cost" class="text-2xl sm:text-3xl font-extrabold text-sky-300 mt-1">$7.00</div>
+            <div id="out-session-kwh" class="text-[11px] text-slate-400 mt-1">50.0 kWh drawn from wall</div>
+          </div>
+
+          <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/70">
+            <div class="text-xs text-slate-400 font-medium">Session Charge Time</div>
+            <div id="out-time" class="text-2xl sm:text-3xl font-extrabold text-amber-300 mt-1">6h 45m</div>
+            <div class="text-[11px] text-slate-400 mt-1">At selected home charger kW</div>
+          </div>
+
+          <div class="bg-slate-800/80 rounded-xl p-4 border border-slate-700/70">
+            <div class="text-xs text-slate-400 font-medium">Annual EV Electricity Cost</div>
+            <div id="out-ev-annual" class="text-2xl sm:text-3xl font-extrabold text-indigo-300 mt-1">$519</div>
+            <div id="out-gas-annual" class="text-[11px] text-slate-400 mt-1">vs. Petrol: $1,479 / yr</div>
+          </div>
+        </div>
+
+        <div class="bg-slate-800/50 rounded-xl p-4 border border-slate-700/60 text-xs text-slate-300 leading-relaxed" id="out-ev-summary">
+          Driving 12,000 miles/year costs $0.043 per mile on home electricity compared to $0.123 per mile on petrol—saving $80/month.
+        </div>
+      </div>
+    </section>
+
+    <!-- AD SLOT 2: BELOW WORKSPACE (48px clearance) -->
+    <div aria-label="Advertisement" class="my-12 min-h-[250px] rounded-2xl border border-dashed border-slate-300 bg-slate-100/70 flex flex-col items-center justify-center text-center px-4 py-6">
+      <span class="text-[10px] font-bold tracking-widest uppercase text-slate-400">Advertisement · Display Rectangle (336×280 / Responsive)</span>
+      <span class="text-xs text-slate-400 mt-1">48px clearance below calculator prevents accidental clicks</span>
+    </div>
+
+    <!-- 700-WORD EV CHARGING GUIDE & FAQ -->
+    <article class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6 text-slate-700 leading-relaxed">
+      <h2 class="text-2xl font-extrabold text-slate-900">How to Calculate Real-World EV Home Charging Costs &amp; Savings</h2>
+      <p>
+        Switching from an internal combustion vehicle to a battery electric vehicle (EV) shifts your transportation energy bill from unpredictable petrol stations to your home utility meter. However, accurate budgeting requires accounting for AC-to-DC charging losses, time-of-use electricity tariffs, and seasonal efficiency variations rather than multiplying raw battery kWh by daytime electricity rates.
+      </p>
+
+      <h3 class="text-lg font-bold text-slate-900">1. Accounting for Wall-to-Battery Charging Efficiency</h3>
+      <p>
+        Every electric vehicle uses an onboard charger to convert alternating current (AC) from your wall box into direct current (DC) stored inside the lithium-ion battery pack. During Level 2 charging (240V at 7.4 kW to 11.5 kW), roughly 8% to 10% of incoming electricity is consumed by inverter conversion heat and battery cooling pumps. Level 1 trickle charging on a standard 120V/15A outlet experiences higher overhead—often 14% to 16%—because vehicle computers remain awake for 24+ hours. Our calculator automatically divides stored battery energy by 0.90 so your wall-meter cost reflects real utility billing.
+      </p>
+
+      <h3 class="text-lg font-bold text-slate-900">2. Level 1 vs. Level 2 Home Charger Comparison</h3>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs sm:text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50 text-slate-900">
+              <th class="py-3 px-4 font-bold">Charger Type</th>
+              <th class="py-3 px-4 font-bold">Power Output</th>
+              <th class="py-3 px-4 font-bold">Range Added / Hour</th>
+              <th class="py-3 px-4 font-bold">Best Use Case</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            <tr>
+              <td class="py-3 px-4 font-semibold">Level 1 Standard Outlet</td>
+              <td class="py-3 px-4">1.4 kW – 2.3 kW</td>
+              <td class="py-3 px-4">4 – 7 Miles / hr</td>
+              <td class="py-3 px-4">Plug-in hybrids &amp; under 30 mi/day</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold">Level 2 Wallbox (32A)</td>
+              <td class="py-3 px-4">7.4 kW – 7.7 kW</td>
+              <td class="py-3 px-4">25 – 30 Miles / hr</td>
+              <td class="py-3 px-4">Standard overnight home EV charging</td>
+            </tr>
+            <tr>
+              <td class="py-3 px-4 font-semibold">Level 2 High-Output (48A)</td>
+              <td class="py-3 px-4">11.5 kW</td>
+              <td class="py-3 px-4">38 – 44 Miles / hr</td>
+              <td class="py-3 px-4">Large 90–130 kWh SUVs &amp; pickup trucks</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- AD SLOT 3: MID-ARTICLE -->
+      <div aria-label="Advertisement" class="my-8 min-h-[250px] rounded-2xl border border-dashed border-slate-300 bg-slate-50 flex flex-col items-center justify-center text-center px-4 py-6">
+        <span class="text-[10px] font-bold tracking-widest uppercase text-slate-400">Advertisement · In-Article Responsive Unit</span>
+      </div>
+
+      <h3 class="text-lg font-bold text-slate-900">3. Frequently Asked Questions</h3>
+      <div class="space-y-4">
+        <div>
+          <h4 class="font-bold text-slate-900">How much can an off-peak EV tariff cut charging bills?</h4>
+          <p class="text-sm text-slate-600 mt-1">
+            Many US and UK utilities offer overnight EV rates between $0.07–$0.11/kWh (or £0.07–£0.09/kWh in the UK) between midnight and 5:00 AM. Scheduling your charger inside your car's app to run only during that window can cut annual electricity costs by more than 50%.
+          </p>
+        </div>
+        <div>
+          <h4 class="font-bold text-slate-900">Should I charge my EV to 80% or 100% daily?</h4>
+          <p class="text-sm text-slate-600 mt-1">
+            For NMC/NCA lithium-ion batteries, keeping daily charging capped at 80% minimizes cathode stress and extends pack longevity, saving 100% charges for long highway trips. LFP (Lithium Iron Phosphate) packs can be charged to 100% weekly for BMS calibration.
+          </p>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 mt-12">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div>© 2026 <strong class="text-slate-800">SahilWebKit</strong> · Free Browser Utilities &amp; Engineering Calculators</div>
+      <div class="flex flex-wrap items-center gap-4">
+        <a href="/" class="hover:text-indigo-600">Solar Calculator</a>
+        <a href="/saas-calculator" class="hover:text-indigo-600">SaaS Calculator</a>
+        <a href="/image-kb-reducer" class="hover:text-indigo-600">Image KB Reducer</a>
+        <a href="/pdf-merger" class="hover:text-indigo-600">PDF Merger</a>
+        <a href="/image-to-pdf" class="hover:text-indigo-600">Images to PDF</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    let currency = 'USD';
+    const symMap = { USD: '$', GBP: '£' };
+
+    function setCurrency(curr) {
+      currency = curr;
+      document.querySelectorAll('.curr-sym').forEach(el => el.textContent = symMap[curr]);
+      const btnUsd = document.getElementById('btn-usd');
+      const btnGbp = document.getElementById('btn-gbp');
+      if (curr === 'USD') {
+        btnUsd.className = 'px-2.5 py-1.5 text-xs font-bold rounded-lg bg-white text-indigo-700 shadow-xs transition';
+        btnGbp.className = 'px-2.5 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition';
+        document.getElementById('elec-rate').value = 0.14;
+        document.getElementById('gas-price').value = 3.45;
+      } else {
+        btnGbp.className = 'px-2.5 py-1.5 text-xs font-bold rounded-lg bg-white text-indigo-700 shadow-xs transition';
+        btnUsd.className = 'px-2.5 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:text-slate-900 transition';
+        document.getElementById('elec-rate').value = 0.08;
+        document.getElementById('gas-price').value = 6.20;
+      }
+      calcEv();
+    }
+
+    function calcEv() {
+      const batteryKwh = Math.max(5, parseFloat(document.getElementById('battery-kwh').value) || 75);
+      const chargePct = Math.min(100, Math.max(1, parseFloat(document.getElementById('charge-pct').value) || 60));
+      const elecRate = Math.max(0.01, parseFloat(document.getElementById('elec-rate').value) || 0.14);
+      const chargerKw = Math.max(1, parseFloat(document.getElementById('charger-kw').value) || 7.4);
+      const annualMiles = Math.max(100, parseFloat(document.getElementById('annual-miles').value) || 12000);
+      const evEff = Math.max(0.5, parseFloat(document.getElementById('ev-eff').value) || 3.6);
+      const gasPrice = Math.max(0.5, parseFloat(document.getElementById('gas-price').value) || 3.45);
+      const iceMpg = Math.max(5, parseFloat(document.getElementById('ice-mpg').value) || 28);
+
+      const wallEfficiency = 0.90;
+      const storedKwh = batteryKwh * (chargePct / 100);
+      const wallKwhSession = storedKwh / wallEfficiency;
+      const sessionCost = wallKwhSession * elecRate;
+      const hoursDecimal = wallKwhSession / chargerKw;
+      const hrs = Math.floor(hoursDecimal);
+      const mins = Math.round((hoursDecimal - hrs) * 60);
+
+      const annualWallKwh = (annualMiles / evEff) / wallEfficiency;
+      const annualEvCost = annualWallKwh * elecRate;
+      const annualGasCost = (annualMiles / iceMpg) * gasPrice;
+      const annualSavings = annualGasCost - annualEvCost;
+
+      const sym = symMap[currency];
+      document.getElementById('out-savings').textContent = `${sym}${Math.round(annualSavings).toLocaleString('en-US')}`;
+      document.getElementById('out-5yr').textContent = `5-year savings: ${sym}${Math.round(annualSavings * 5).toLocaleString('en-US')}`;
+      document.getElementById('out-session-cost').textContent = `${sym}${sessionCost.toFixed(2)}`;
+      document.getElementById('out-session-kwh').textContent = `${wallKwhSession.toFixed(1)} kWh drawn from wall`;
+      document.getElementById('out-time').textContent = `${hrs}h ${mins}m`;
+      document.getElementById('out-ev-annual').textContent = `${sym}${Math.round(annualEvCost).toLocaleString('en-US')}`;
+      document.getElementById('out-gas-annual').textContent = `vs. Petrol: ${sym}${Math.round(annualGasCost).toLocaleString('en-US')} / yr`;
+
+      const costPerMileEv = annualEvCost / annualMiles;
+      const costPerMileGas = annualGasCost / annualMiles;
+      document.getElementById('out-ev-summary').textContent =
+        `Driving ${annualMiles.toLocaleString('en-US')} miles/year costs ${sym}${costPerMileEv.toFixed(3)} per mile on home electricity compared to ${sym}${costPerMileGas.toFixed(3)} per mile on petrol—saving ${sym}${Math.round(annualSavings / 12)}/month.`;
+    }
+
+    function resetEv() {
+      document.getElementById('battery-kwh').value = 75;
+      document.getElementById('charge-pct').value = 60;
+      document.getElementById('charger-kw').value = 7.4;
+      document.getElementById('annual-miles').value = 12000;
+      document.getElementById('ev-eff').value = 3.6;
+      document.getElementById('ice-mpg').value = 28;
+      setCurrency(currency);
+    }
+
+    window.onload = calcEv;
+  </script>
+</body>
+</html>
