@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merge PDF Files Online Free &amp; Offline (100% Private, No Upload) | SahilWebKit</title>
+  <meta name="description" content="Merge and combine multiple PDF contracts, invoices, bank statements, and scanned documents into one PDF 100% locally in your browser. Zero server uploads, reorder files, select page ranges, and strip metadata." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://sahilwebkit.com/pdf-merger" />
+
+  <!-- Open Graph Metadata -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="SahilWebKit" />
+  <meta property="og:title" content="Merge PDF Files Online Free &amp; Offline (100% Private, No Upload) | SahilWebKit" />
+  <meta property="og:description" content="Combine multiple PDF files in exact order directly inside your browser without uploading sensitive financial or legal documents to any remote server." />
+  <meta property="og:url" content="https://sahilwebkit.com/pdf-merger" />
+
+  <!-- Fonts & Tailwind CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Client-side PDF manipulation library (100% local in browser) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- JSON-LD Structured Data: WebApplication & FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "SahilWebKit Client-Side PDF Merger",
+        "url": "https://sahilwebkit.com/pdf-merger",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any (Web Browser)",
+        "browserRequirements": "Requires JavaScript & Modern Browser",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "Free client-side PDF merger and reorderer that combines multiple PDF files, custom page ranges, and strips document metadata 100% locally in the user's browser."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Are my PDF contracts, invoices, or bank statements uploaded to a server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. SahilWebKit parses and merges your PDF documents 100% locally inside your web browser's RAM using pdf-lib. Your files never leave your computer or phone, making it safe for confidential legal, HR, and financial records."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I merge specific page ranges instead of entire PDF files?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Each queued PDF includes an optional Page Range input (such as '1-3, 5') where you can specify exact pages to extract and merge, or leave it set to 'All' to include every page in that file."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why does a password-protected PDF show an encryption notice?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Encrypted PDFs scramble their internal page objects using an owner or user password, preventing browsers from copying pages without first decrypting them. Open the protected PDF in Chrome or Adobe Reader, print/save an unlocked copy, and then add it to the queue."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there a limit on file size or number of PDFs I can combine?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "There are no artificial file-count caps or paywalls. Because merging happens locally on your own device, you can combine dozens of PDFs totaling hundreds of pages as fast as your device's memory allows."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What does the Strip Old Metadata option do?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "When enabled, SahilWebKit clears legacy Author, Creator, Subject, and Keywords properties from the merged PDF header so internal software names or creator usernames are not exposed when you email the document externally."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* Hide scrollbar on mobile horizontal navigation strip while preserving smooth touch swipe */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900 flex flex-col min-h-screen">
+
+  <!-- ===================================================================== -->
+  <!-- UNIFIED MULTI-PAGE NAVIGATION BAR (SahilWebKit)                       -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Top Row: Brand Logo + Privacy Badge + Share Tool Button -->
+      <div class="flex items-center justify-between py-3 gap-3">
+        <a href="/" class="flex items-center gap-2.5 group shrink-0" aria-label="SahilWebKit Home">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-emerald-600 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+          </div>
+          <div>
+            <span class="font-extrabold text-lg tracking-tight text-slate-900">Sahil<span class="text-indigo-600">WebKit</span></span>
+            <span class="hidden sm:block text-[11px] font-medium text-slate-500 -mt-1">Calculators &amp; Local File Studio</span>
+          </div>
+        </a>
+
+        <div class="flex items-center gap-2.5">
+          <span class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            100% Local Browser Processing
+          </span>
+
+          <button type="button" onclick="copyPageUrl()" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 active:scale-95 transition">
+            <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+            <span>Share Tool</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Clean Multi-Page Navigation Strip -->
+      <nav aria-label="Primary Tool Navigation" class="flex items-center gap-1.5 overflow-x-auto py-2.5 border-t border-slate-100 no-scrollbar">
+        <a href="/" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          Solar &amp; Battery
+        </a>
+        <a href="/saas-calculator" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+          <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+          SaaS Metrics
+        </a>
+        <a href="/ev-charging-calculator" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+          <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+          EV Savings
+        </a>
+        <a href="/image-kb-reducer" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          Image KB Reducer
+        </a>
+        <a href="/pdf-merger" aria-current="page" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 text-white shadow-xs transition">
+          <span class="w-2 h-2 rounded-full bg-rose-300"></span>
+          PDF Merger
+        </a>
+        <a href="/image-to-pdf" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+          Images to PDF
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Toast Notification (Replaces alert()) -->
+  <div id="toast" role="status" aria-live="polite" class="fixed bottom-5 right-5 z-50 hidden items-center gap-2.5 bg-slate-900 text-white text-xs sm:text-sm font-medium px-4 py-3 rounded-xl shadow-lg border border-slate-700">
+    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+    <span id="toast-msg">Notification</span>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- AD SLOT 1: TOP LEADERBOARD (Fixed 90px min-height + >=48px clearance) -->
+  <!-- ===================================================================== -->
+  <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6">
+    <aside aria-label="Advertisement" class="w-full min-h-[90px] bg-slate-100/90 border border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center text-center p-3">
+      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Advertisement</span>
+      <span class="text-xs text-slate-400 mt-0.5">Top Leaderboard Display Slot (728×90 / Responsive · Zero CLS)</span>
+    </aside>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MAIN WORKSPACE AREA (48px / pt-12 clearance below top ad slot)        -->
+  <!-- ===================================================================== -->
+  <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-12 pb-12 space-y-12">
+
+    <!-- Page Hero & Interactive PDF Merger Tool -->
+    <section aria-labelledby="tool-heading" class="space-y-6">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold mb-3">
+          <svg class="w-3.5 h-3.5 text-rose-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          100% Private — Zero Server Uploads (Client-Side pdf-lib Engine)
+        </div>
+        <h1 id="tool-heading" class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          Merge PDF Files Online Free &amp; Offline (100% Private)
+        </h1>
+        <p class="mt-2.5 text-sm sm:text-base text-slate-600 leading-relaxed">
+          Combine multiple PDF contracts, monthly invoices, bank statements, and scanned forms into a single organized PDF document. Reorder files, choose custom page ranges, and strip legacy metadata directly inside your browser.
+        </p>
+      </div>
+
+      <!-- Workspace Grid: Left (Dropzone + Reorderable Queue) & Right (Summary + Export) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- LEFT COLUMN (7 cols): Upload Dropzone & Queue Controls -->
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-5">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+            <h2 class="text-base font-bold text-slate-900">1. Add &amp; Reorder PDF Files</h2>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="sortQueueAlphabetically()" class="text-xs font-semibold text-slate-700 hover:text-indigo-700 bg-slate-100 hover:bg-indigo-50 px-2.5 py-1.5 rounded-lg transition">
+                Sort A–Z
+              </button>
+              <button type="button" onclick="clearAllPdfs()" class="text-xs font-semibold text-rose-600 hover:text-rose-700 px-2.5 py-1.5 rounded-lg hover:bg-rose-50 transition">
+                Clear All
+              </button>
+            </div>
+          </div>
+
+          <!-- Drag-and-Drop / Multi-File PDF Picker -->
+          <div id="pdf-dropzone" role="button" tabindex="0" aria-label="Upload PDF files" onclick="document.getElementById('pdf-file-input').click()" onkeydown="if(event.key==='Enter'||event.key===' ')document.getElementById('pdf-file-input').click()" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 focus:border-indigo-500 focus:outline-none bg-slate-50/80 hover:bg-indigo-50/40 rounded-2xl p-6 text-center cursor-pointer transition-all">
+            <input type="file" id="pdf-file-input" accept="application/pdf,.pdf" multiple class="hidden" onchange="handlePdfFiles(this.files)" />
+            <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center mx-auto mb-3">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <p class="text-sm font-bold text-slate-900">Drop 2 or more PDF files here, or tap to browse</p>
+            <p class="text-xs text-slate-500 mt-1">Processed 100% locally in your browser · No file count limits</p>
+          </div>
+
+          <!-- Inline Error / Encryption Notice Banner (Replaces alert()) -->
+          <div id="pdf-alert-box" role="alert" class="hidden rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs sm:text-sm text-rose-800 flex items-start justify-between gap-3">
+            <div class="flex items-start gap-2.5">
+              <svg class="w-4 h-4 text-rose-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <span id="pdf-alert-text">Notice</span>
+            </div>
+            <button type="button" onclick="dismissAlert()" class="text-rose-500 hover:text-rose-800 font-bold text-xs shrink-0">Dismiss</button>
+          </div>
+
+          <!-- Queued PDF Files List -->
+          <div id="pdf-queue-container" class="space-y-2.5">
+            <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-6 text-center">
+              <p class="text-xs sm:text-sm font-medium text-slate-500">Your PDF merge queue is empty.</p>
+              <p class="text-[11px] text-slate-400 mt-1">Select at least 2 PDF files above to reorder sequence or pick specific page ranges.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN (5 cols): Merge Summary, Privacy Options & Download Card -->
+        <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-base font-bold text-slate-900">2. Merge Summary &amp; Export</h2>
+            <span id="queue-ready-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600">Add 2+ PDFs</span>
+          </div>
+
+          <!-- Live Queue Metrics -->
+          <div class="grid grid-cols-3 gap-2.5 text-center">
+            <div class="bg-slate-50 rounded-xl p-3 border border-slate-200/80">
+              <p class="text-[11px] text-slate-500 font-medium">Total Files</p>
+              <p id="stat-files" class="text-base sm:text-lg font-extrabold text-slate-900 mt-0.5">0</p>
+            </div>
+            <div class="bg-indigo-50/80 rounded-xl p-3 border border-indigo-200">
+              <p class="text-[11px] text-indigo-700 font-semibold">Selected Pages</p>
+              <p id="stat-pages" class="text-base sm:text-lg font-extrabold text-indigo-700 mt-0.5">0</p>
+            </div>
+            <div class="bg-emerald-50/80 rounded-xl p-3 border border-emerald-200">
+              <p class="text-[11px] text-emerald-700 font-semibold">Est. Size</p>
+              <p id="stat-size" class="text-base sm:text-lg font-extrabold text-emerald-700 mt-0.5">0 KB</p>
+            </div>
+          </div>
+
+          <!-- Output Filename Input -->
+          <div>
+            <label for="merge-filename" class="block text-xs font-semibold text-slate-700 mb-1.5">Merged PDF Filename</label>
+            <input type="text" id="merge-filename" value="merged-document-sahilwebkit.pdf" placeholder="merged-document-sahilwebkit.pdf" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+          </div>
+
+          <!-- Privacy Metadata Cleanup Toggle -->
+          <label class="flex items-start gap-3 p-3.5 rounded-xl bg-slate-50 border border-slate-200/90 cursor-pointer hover:bg-slate-100/70 transition">
+            <input type="checkbox" id="opt-strip-meta" checked class="mt-0.5 w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+            <div class="text-xs">
+              <span class="font-bold text-slate-900 block">Strip Legacy Author &amp; Producer Metadata</span>
+              <span class="text-slate-500 mt-0.5 block">Clears old creator usernames, internal software stamps, and keywords from the merged file header.</span>
+            </div>
+          </label>
+
+          <!-- Primary Merge & Download Action Button -->
+          <div class="pt-1">
+            <button type="button" id="btn-merge-now" disabled onclick="executePdfMerge()" class="w-full py-3.5 px-5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7v8a2 2 0 002 2h6M8 7V5a2 2 0 012-2h4.586a1 1 0 01.707.293l4.414 4.414a1 1 0 01.293.707V15a2 2 0 01-2 2h-2M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2v-2" />
+              </svg>
+              <span id="btn-merge-label">Merge &amp; Download PDF</span>
+            </button>
+          </div>
+
+          <!-- Completed Export Banner (Allows instant re-download without re-processing) -->
+          <div id="merge-success-card" class="hidden rounded-2xl bg-slate-900 text-white p-4 space-y-3 border border-slate-800">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">Merged PDF Ready</span>
+              <span id="merged-final-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-300">0 pages</span>
+            </div>
+            <p id="merged-final-info" class="text-xs text-slate-300">Your combined document has been generated locally.</p>
+            <button type="button" onclick="downloadLastMergedPdf()" class="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span>Download Merged PDF Again</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- AD SLOT 2: BELOW-WORKSPACE DISPLAY UNIT (min-h-[250px] + >=48px gap)  -->
+    <!-- ===================================================================== -->
+    <div class="pt-8">
+      <aside aria-label="Advertisement" class="w-full min-h-[250px] bg-slate-100/90 border border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center text-center p-4">
+        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Advertisement</span>
+        <span class="text-xs text-slate-400 mt-1 max-w-md">Below-Tool Display Slot (336×280 / Responsive · 48px+ clearance from action buttons)</span>
+      </aside>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- 750+ WORD EDUCATIONAL GUIDE, COMPARISON TABLE & FAQ                   -->
+    <!-- ===================================================================== -->
+    <article class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 sm:p-10 space-y-8">
+      <div class="max-w-3xl">
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Zero-Upload Document Security &amp; Workflow Guide</span>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">How Browser-Based PDF Merging Works Without Uploading Your Files</h2>
+        <p class="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
+          Combining multiple PDF files—such as signed employment agreements, monthly VAT/tax invoices, mortgage disclosures, or multi-part academic transcripts—is an everyday necessity across legal, accounting, and administrative workflows. Yet most free online PDF tools force you to upload confidential files onto remote third-party servers before stitching them together. <strong>SahilWebKit</strong> eliminates that security bottleneck by performing the entire merge operation locally inside your web browser.
+        </p>
+      </div>
+
+      <!-- Two-Column Technical & Workflow Explanation -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+        <div class="space-y-3">
+          <h3 class="text-base font-bold text-slate-900">1. Why Zero-Upload Local Merging Protects Sensitive Documents</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            When you upload bank statements, client contracts, or medical records to a server-based PDF website, your documents travel over external networks and reside on cloud storage drives—often violating corporate NDA policies, <strong>GDPR</strong> data-minimization rules, or healthcare privacy standards.
+          </p>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            SahilWebKit loads the open-source <strong>pdf-lib</strong> engine directly in your browser tab. When you drop files into the queue, JavaScript reads the raw binary <code>ArrayBuffer</code> in local RAM, extracts the exact page trees and embedded fonts you select, and writes a fresh single-file PDF blob straight to your Downloads folder. Zero bytes ever touch an external server.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-bold text-slate-900">2. Step-by-Step Workflow &amp; Custom Page Range Tips</h3>
+          <ul class="space-y-2.5 text-sm text-slate-600">
+            <li class="flex items-start gap-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+              <span><strong>Batch-Add Your PDFs:</strong> Drag and drop all files at once or add additional PDFs from different folders sequentially.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+              <span><strong>Arrange Exact Sequence:</strong> Use the <em>Move Up / Move Down</em> arrows or click <em>Sort A–Z</em> to order numbered invoices or chapters cleanly.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+              <span><strong>Filter Page Ranges (Optional):</strong> Type ranges like <code>1-2, 5</code> in any file's Page Range field to skip blank cover sheets or terms-and-conditions appendices.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</span>
+              <span><strong>Sanitize &amp; Export:</strong> Keep <em>Strip Legacy Metadata</em> enabled to wipe old creator software tags, then click <em>Merge &amp; Download PDF</em>.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Comparison Table: Browser Local vs Cloud Upload vs Desktop Software -->
+      <div class="space-y-3">
+        <h3 class="text-base font-bold text-slate-900">3. Comparison: Browser Local Merge vs. Cloud Upload Sites vs. Desktop Suites</h3>
+        <div class="overflow-x-auto rounded-xl border border-slate-200">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-800">
+                <th class="py-3 px-4 font-bold">Feature / Criteria</th>
+                <th class="py-3 px-4 font-bold text-indigo-700">SahilWebKit (Browser Local)</th>
+                <th class="py-3 px-4 font-bold">Cloud Upload PDF Sites</th>
+                <th class="py-3 px-4 font-bold">Paid Desktop PDF Suites</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 text-slate-600">
+              <tr>
+                <td class="py-3 px-4 font-bold text-slate-900">Document Privacy</td>
+                <td class="py-3 px-4 text-emerald-700 font-semibold">100% Local (Zero Server Upload)</td>
+                <td class="py-3 px-4 text-rose-700">Uploaded to external cloud servers</td>
+                <td class="py-3 px-4">Local on installed PC</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-bold text-slate-900">Cost &amp; Account Limits</td>
+                <td class="py-3 px-4 text-emerald-700 font-semibold">Free · Unlimited merges</td>
+                <td class="py-3 px-4">Often capped at 2 tasks/day or paywalled</td>
+                <td class="py-3 px-4">$15–$25/month subscription</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-bold text-slate-900">Processing Speed</td>
+                <td class="py-3 px-4 text-emerald-700 font-semibold">Instant (No upload/download wait)</td>
+                <td class="py-3 px-4">Slow on large multi-MB scans</td>
+                <td class="py-3 px-4">Fast (Requires 1 GB+ installation)</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-bold text-slate-900">Works Offline &amp; on Mobile</td>
+                <td class="py-3 px-4 text-emerald-700 font-semibold">Yes (iOS, Android, Windows, Mac)</td>
+                <td class="py-3 px-4">Requires constant internet upload</td>
+                <td class="py-3 px-4">Desktop OS only</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- AD SLOT 3: MID-ARTICLE DISPLAY UNIT (Between Table & FAQ, >=40px)   -->
+      <!-- =================================================================== -->
+      <div class="py-2">
+        <aside aria-label="Advertisement" class="w-full min-h-[250px] bg-slate-100/90 border border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center text-center p-4">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Advertisement</span>
+          <span class="text-xs text-slate-400 mt-1 max-w-md">Mid-Article In-Content Display Slot (Responsive · Zero CLS)</span>
+        </aside>
+      </div>
+
+      <!-- Frequently Asked Questions (5 Detailed Questions) -->
+      <div class="border-t border-slate-200 pt-6 space-y-4">
+        <h3 class="text-lg font-bold text-slate-900">Frequently Asked Questions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900">1. Are my PDF contracts, invoices, or bank statements uploaded to a server?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+              Never. Every PDF file is read and combined strictly inside your browser's local memory using JavaScript. You can even turn off your internet connection after loading this page and merge confidential documents offline.
+            </p>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900">2. Can I merge specific page ranges instead of entire PDF files?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+              Yes. Next to each queued PDF, use the <strong>Pages</strong> box to enter ranges like <code>1-3, 6</code>. Leave it blank or type <code>all</code> to include every page in that file.
+            </p>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900">3. Why does a password-protected PDF show an encryption notice?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+              Encrypted bank or payroll PDFs lock their internal page streams with a cipher. To merge one, open it in Chrome or Adobe Reader, enter your password, choose <strong>Print → Save as PDF</strong> to save an unlocked copy, and add that unlocked file here.
+            </p>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900">4. Is there any limit on file size or number of PDFs?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+              There are no artificial file limits or daily quotas. Because merging runs on your device's own RAM, you can combine 10, 25, or 50+ PDFs in seconds while preserving original vector text sharpness and clickable hyperlinks.
+            </p>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80 md:col-span-2">
+            <h4 class="text-sm font-bold text-slate-900">5. What does "Strip Legacy Author &amp; Producer Metadata" do?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+              PDF files often carry hidden document properties revealing the original employee's computer username, accounting software version, or internal keywords. Checking <strong>Strip Legacy Author &amp; Producer Metadata</strong> resets those fields cleanly before generating your merged download.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- FOOTER WITH TOOL LINKS & ADSENSE COMPLIANCE MODALS                    -->
+  <!-- ===================================================================== -->
+  <footer class="bg-white border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div>
+          <a href="/" class="font-extrabold text-base text-slate-900">Sahil<span class="text-indigo-600">WebKit</span></a>
+          <p class="text-xs text-slate-500 mt-1 max-w-md">
+            Fast, privacy-first online calculators and local browser file utilities. Zero server uploads, zero registration required.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-4 sm:gap-6 text-xs font-semibold text-slate-600">
+          <button type="button" onclick="openLegalModal('about')" class="hover:text-indigo-600 transition">About</button>
+          <button type="button" onclick="openLegalModal('privacy')" class="hover:text-indigo-600 transition">Privacy Policy</button>
+          <button type="button" onclick="openLegalModal('disclaimer')" class="hover:text-indigo-600 transition">Disclaimer</button>
+          <button type="button" onclick="openLegalModal('contact')" class="hover:text-indigo-600 transition">Contact</button>
+        </div>
+      </div>
+
+      <!-- Quick Internal Links to All 6 Tools -->
+      <div class="pt-5 border-t border-slate-100 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-500">
+        <span class="font-bold text-slate-700">All Tools:</span>
+        <a href="/" class="hover:text-indigo-600 transition">Solar &amp; Battery Calculator</a>
+        <a href="/saas-calculator" class="hover:text-indigo-600 transition">SaaS Churn &amp; LTV Calculator</a>
+        <a href="/ev-charging-calculator" class="hover:text-indigo-600 transition">EV Charging Savings</a>
+        <a href="/image-kb-reducer" class="hover:text-indigo-600 transition">Exact-KB Image Reducer</a>
+        <a href="/pdf-merger" class="text-indigo-600 font-semibold">PDF Merger</a>
+        <a href="/image-to-pdf" class="hover:text-indigo-600 transition">Images to PDF</a>
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
+        <p>© 2026 SahilWebKit. All rights reserved.</p>
+        <p>100% Client-Side Execution · Your images and documents never leave your browser.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- LEGAL & ADSENSE COMPLIANCE MODAL                                      -->
+  <!-- ===================================================================== -->
+  <div id="legal-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-6 sm:p-7 shadow-2xl border border-slate-200 max-h-[85vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <h3 id="modal-title" class="text-lg font-bold text-slate-900">Information</h3>
+        <button type="button" onclick="closeLegalModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100" aria-label="Close modal">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div id="modal-body" class="text-sm text-slate-600 space-y-3 leading-relaxed"></div>
+      <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+        <button type="button" onclick="closeLegalModal()" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // CLIENT-SIDE PDF MERGER & PAGE REORDERER ENGINE (pdf-lib)
+    // =========================================================================
+    const pdfQueue = []; // { id, name, size, pageCount, arrayBuffer, pageRange }
+    const lastExport = {
+      blobUrl: null,
+      filename: 'merged-document-sahilwebkit.pdf'
+    };
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes <= 0) return '0 KB';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 2800);
+    }
+
+    function showAlert(msg) {
+      const box = document.getElementById('pdf-alert-box');
+      document.getElementById('pdf-alert-text').textContent = msg;
+      box.classList.remove('hidden');
+    }
+
+    function dismissAlert() {
+      document.getElementById('pdf-alert-box').classList.add('hidden');
+    }
+
+    function copyPageUrl() {
+      const tempInput = document.createElement('input');
+      tempInput.value = window.location.href;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast('PDF Merger link copied to clipboard!');
+      } catch (err) {
+        showToast('Copy the URL from your browser address bar.');
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    // Parse human page range strings like "1-3, 5" into 0-based page indices
+    function parsePageIndices(rangeStr, totalPages) {
+      const clean = (rangeStr || '').trim().toLowerCase();
+      if (!clean || clean === 'all' || clean === '*') {
+        return Array.from({ length: totalPages }, (_, i) => i);
+      }
+
+      const indices = [];
+      const seen = new Set();
+      const parts = clean.split(',');
+
+      for (const rawPart of parts) {
+        const part = rawPart.trim();
+        if (!part) continue;
+
+        if (part.includes('-')) {
+          const [startStr, endStr] = part.split('-');
+          const start = parseInt(startStr, 10);
+          const end = parseInt(endStr, 10);
+          if (!isNaN(start) && !isNaN(end) && start >= 1 && end >= start) {
+            const clampedEnd = Math.min(end, totalPages);
+            for (let p = start; p <= clampedEnd; p++) {
+              if (!seen.has(p - 1)) {
+                seen.add(p - 1);
+                indices.push(p - 1);
+              }
+            }
+          }
+        } else {
+          const single = parseInt(part, 10);
+          if (!isNaN(single) && single >= 1 && single <= totalPages && !seen.has(single - 1)) {
+            seen.add(single - 1);
+            indices.push(single - 1);
+          }
+        }
+      }
+
+      return indices;
+    }
+
+    async function handlePdfFiles(fileList) {
+      if (!fileList || fileList.length === 0) return;
+      if (typeof PDFLib === 'undefined') {
+        showAlert('The local PDF engine is still loading. Please wait a second and select your files again.');
+        return;
+      }
+
+      dismissAlert();
+      let addedCount = 0;
+      const skippedReasons = [];
+
+      for (const file of Array.from(fileList)) {
+        const isPdfMime = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+        if (!isPdfMime) {
+          skippedReasons.push(`"${file.name}" is not a PDF file.`);
+          continue;
+        }
+
+        try {
+          const arrayBuffer = await file.arrayBuffer();
+          const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+          const pageCount = pdfDoc.getPageCount();
+
+          if (pageCount === 0) {
+            skippedReasons.push(`"${file.name}" contains 0 pages.`);
+            continue;
+          }
+
+          pdfQueue.push({
+            id: Math.random().toString(36).slice(2, 10),
+            name: file.name,
+            size: file.size,
+            pageCount,
+            arrayBuffer,
+            pageRange: 'All'
+          });
+          addedCount++;
+        } catch (err) {
+          const msg = String(err && err.message ? err.message : '').toLowerCase();
+          if (msg.includes('encrypt') || msg.includes('password')) {
+            skippedReasons.push(`"${file.name}" is password-protected/encrypted. Save an unlocked copy first.`);
+          } else {
+            skippedReasons.push(`"${file.name}" could not be parsed (corrupted or encrypted PDF).`);
+          }
+        }
+      }
+
+      document.getElementById('pdf-file-input').value = '';
+
+      if (skippedReasons.length > 0) {
+        showAlert(skippedReasons.join(' '));
+      }
+      if (addedCount > 0) {
+        hidePreviousExport();
+        renderQueue();
+        showToast(`Added ${addedCount} PDF file${addedCount > 1 ? 's' : ''} to queue`);
+      }
+    }
+
+    function updatePageRange(index, newValue) {
+      if (!pdfQueue[index]) return;
+      pdfQueue[index].pageRange = newValue;
+      hidePreviousExport();
+      updateSummaryStats();
+    }
+
+    function movePdf(index, delta) {
+      const target = index + delta;
+      if (target < 0 || target >= pdfQueue.length) return;
+      const temp = pdfQueue[index];
+      pdfQueue[index] = pdfQueue[target];
+      pdfQueue[target] = temp;
+      hidePreviousExport();
+      renderQueue();
+    }
+
+    function sortQueueAlphabetically() {
+      if (pdfQueue.length < 2) return;
+      pdfQueue.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+      hidePreviousExport();
+      renderQueue();
+      showToast('Sorted PDFs alphabetically (A–Z)');
+    }
+
+    function removePdf(index) {
+      pdfQueue.splice(index, 1);
+      hidePreviousExport();
+      renderQueue();
+    }
+
+    function clearAllPdfs() {
+      pdfQueue.length = 0;
+      dismissAlert();
+      hidePreviousExport();
+      renderQueue();
+    }
+
+    function hidePreviousExport() {
+      document.getElementById('merge-success-card').classList.add('hidden');
+      if (lastExport.blobUrl) {
+        URL.revokeObjectURL(lastExport.blobUrl);
+        lastExport.blobUrl = null;
+      }
+    }
+
+    function updateSummaryStats() {
+      const totalFiles = pdfQueue.length;
+      let totalSelectedPages = 0;
+      let estimatedBytes = 0;
+
+      for (const item of pdfQueue) {
+        const chosenIndices = parsePageIndices(item.pageRange, item.pageCount);
+        totalSelectedPages += chosenIndices.length;
+        const ratio = item.pageCount > 0 ? (chosenIndices.length / item.pageCount) : 0;
+        estimatedBytes += item.size * ratio;
+      }
+
+      document.getElementById('stat-files').textContent = totalFiles;
+      document.getElementById('stat-pages').textContent = totalSelectedPages;
+      document.getElementById('stat-size').textContent = formatBytes(estimatedBytes);
+
+      const badge = document.getElementById('queue-ready-badge');
+      const mergeBtn = document.getElementById('btn-merge-now');
+
+      if (totalFiles >= 2 && totalSelectedPages >= 1) {
+        badge.textContent = `Ready · ${totalFiles} PDFs`;
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800';
+        mergeBtn.disabled = false;
+      } else if (totalFiles === 1) {
+        badge.textContent = 'Add 1 more PDF';
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-800';
+        mergeBtn.disabled = true;
+      } else {
+        badge.textContent = 'Add 2+ PDFs';
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600';
+        mergeBtn.disabled = true;
+      }
+    }
+
+    function renderQueue() {
+      const container = document.getElementById('pdf-queue-container');
+      updateSummaryStats();
+
+      if (pdfQueue.length === 0) {
+        container.innerHTML = `
+          <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-6 text-center">
+            <p class="text-xs sm:text-sm font-medium text-slate-500">Your PDF merge queue is empty.</p>
+            <p class="text-[11px] text-slate-400 mt-1">Select at least 2 PDF files above to reorder sequence or pick specific page ranges.</p>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = pdfQueue.map((item, idx) => `
+        <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <!-- File Index Badge + Name + Size/Pages -->
+          <div class="flex items-start sm:items-center gap-3 min-w-0 flex-grow">
+            <span class="w-7 h-7 rounded-lg bg-rose-100 text-rose-700 text-xs font-extrabold flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
+              ${idx + 1}
+            </span>
+            <div class="min-w-0 flex-grow">
+              <p class="text-xs sm:text-sm font-bold text-slate-900 truncate" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</p>
+              <p class="text-[11px] text-slate-500 mt-0.5">
+                <span class="font-semibold text-slate-700">${item.pageCount} page${item.pageCount > 1 ? 's' : ''}</span> · ${formatBytes(item.size)}
+              </p>
+            </div>
+          </div>
+
+          <!-- Page Range Input + Move Up/Down + Remove Controls -->
+          <div class="flex items-center justify-between sm:justify-end gap-2 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200/70 shrink-0">
+            <div class="flex items-center gap-1.5">
+              <label for="range-${item.id}" class="text-[11px] font-semibold text-slate-500">Pages:</label>
+              <input id="range-${item.id}" type="text" value="${escapeHtml(item.pageRange)}" placeholder="All or 1-3" oninput="updatePageRange(${idx}, this.value)" title="Enter 'All' or page numbers like 1-3, 5" class="w-20 rounded-lg border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-800 focus:border-indigo-500 outline-none" />
+            </div>
+
+            <div class="flex items-center gap-1">
+              <button type="button" onclick="movePdf(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Move Up" aria-label="Move PDF Up" class="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-35 transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" /></svg>
+              </button>
+              <button type="button" onclick="movePdf(${idx}, 1)" ${idx === pdfQueue.length - 1 ? 'disabled' : ''} title="Move Down" aria-label="Move PDF Down" class="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-35 transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+              </button>
+              <button type="button" onclick="removePdf(${idx})" title="Remove PDF" aria-label="Remove PDF" class="p-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 ml-0.5 transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function executePdfMerge() {
+      if (pdfQueue.length < 2 || typeof PDFLib === 'undefined') return;
+
+      const btn = document.getElementById('btn-merge-now');
+      const label = document.getElementById('btn-merge-label');
+      btn.disabled = true;
+      label.textContent = 'Merging PDFs Locally...';
+      dismissAlert();
+
+      try {
+        const mergedPdf = await PDFLib.PDFDocument.create();
+        let copiedTotal = 0;
+
+        for (const item of pdfQueue) {
+          const targetIndices = parsePageIndices(item.pageRange, item.pageCount);
+          if (targetIndices.length === 0) continue;
+
+          const srcDoc = await PDFLib.PDFDocument.load(item.arrayBuffer);
+          const copiedPages = await mergedPdf.copyPages(srcDoc, targetIndices);
+          copiedPages.forEach(page => {
+            mergedPdf.addPage(page);
+            copiedTotal++;
+          });
+        }
+
+        if (copiedTotal === 0) {
+          showAlert('No valid pages matched your specified Page Ranges. Reset page ranges to "All" and retry.');
+          btn.disabled = false;
+          label.textContent = 'Merge & Download PDF';
+          return;
+        }
+
+        // Strip legacy metadata if checkbox is checked
+        if (document.getElementById('opt-strip-meta').checked) {
+          mergedPdf.setTitle('');
+          mergedPdf.setAuthor('');
+          mergedPdf.setSubject('');
+          mergedPdf.setKeywords([]);
+          mergedPdf.setProducer('SahilWebKit Local PDF Merger');
+          mergedPdf.setCreator('SahilWebKit');
+        }
+
+        const mergedBytes = await mergedPdf.save();
+        const blob = new Blob([mergedBytes], { type: 'application/pdf' });
+
+        if (lastExport.blobUrl) URL.revokeObjectURL(lastExport.blobUrl);
+        lastExport.blobUrl = URL.createObjectURL(blob);
+
+        let cleanFilename = (document.getElementById('merge-filename').value || 'merged-document-sahilwebkit.pdf').trim();
+        if (!cleanFilename.toLowerCase().endsWith('.pdf')) cleanFilename += '.pdf';
+        lastExport.filename = cleanFilename;
+
+        document.getElementById('merged-final-badge').textContent = `${copiedTotal} page${copiedTotal > 1 ? 's' : ''} · ${formatBytes(blob.size)}`;
+        document.getElementById('merged-final-info').textContent = `Combined ${pdfQueue.length} files into "${cleanFilename}" locally in your browser.`;
+        document.getElementById('merge-success-card').classList.remove('hidden');
+
+        downloadLastMergedPdf();
+        showToast(`Merged ${copiedTotal} pages into ${cleanFilename}!`);
+      } catch (err) {
+        showAlert('An error occurred while combining these PDFs. Please ensure none are corrupted or password-locked.');
+      } finally {
+        btn.disabled = pdfQueue.length < 2;
+        label.textContent = 'Merge & Download PDF';
+      }
+    }
+
+    function downloadLastMergedPdf() {
+      if (!lastExport.blobUrl) return;
+      const a = document.createElement('a');
+      a.href = lastExport.blobUrl;
+      a.download = lastExport.filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // =========================================================================
+    // LEGAL & ADSENSE COMPLIANCE MODALS
+    // =========================================================================
+    const LEGAL_PAGES = {
+      about: {
+        title: 'About SahilWebKit',
+        html: `
+          <p><strong>SahilWebKit</strong> provides fast, privacy-first online engineering calculators and client-side PDF/image utilities built for reliability and security.</p>
+          <p>Unlike cloud file websites that upload your confidential contracts and financial statements to remote servers, every file tool on SahilWebKit runs 100% locally inside your web browser.</p>
+        `
+      },
+      privacy: {
+        title: 'Privacy Policy & Cookie Disclosure',
+        html: `
+          <p><strong>1. Zero-Upload Document Guarantee:</strong> All PDF files combined or reordered on SahilWebKit are processed strictly inside your browser's local RAM via <code>pdf-lib</code>. We never upload, store, inspect, or transmit your documents to any server.</p>
+          <p><strong>2. Google AdSense &amp; Advertising Cookies:</strong> To keep all tools free, SahilWebKit displays advertisements served by Google AdSense. Third-party vendors, including Google, use cookies (such as the DoubleClick/DART cookie) to serve ads based on a user's prior visits to this website or other websites on the internet.</p>
+          <p><strong>3. Opting Out of Personalized Ads:</strong> Users may opt out of personalized advertising by visiting <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" class="text-indigo-600 underline">Google Ads Settings</a> or <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" class="text-indigo-600 underline">www.aboutads.info</a>.</p>
+        `
+      },
+      disclaimer: {
+        title: 'Document & Legal Filing Disclaimer',
+        html: `
+          <p><strong>Verification Before Official Filing:</strong> While SahilWebKit preserves original vector text, fonts, and page dimensions when merging PDF documents, always review your combined PDF file in a standard PDF viewer before submitting it to courts, government portals, banks, or clients.</p>
+        `
+      },
+      contact: {
+        title: 'Contact SahilWebKit',
+        html: `
+          <p>Have a question, bug report, or tool request? Reach our team:</p>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-1.5 text-xs sm:text-sm">
+            <p><strong>Support &amp; Inquiries:</strong> support@sahilwebkit.com</p>
+            <p><strong>Website:</strong> https://sahilwebkit.com</p>
+            <p><strong>Typical Response Time:</strong> 1–2 business days.</p>
+          </div>
+        `
+      }
+    };
+
+    function openLegalModal(key) {
+      const data = LEGAL_PAGES[key];
+      if (!data) return;
+      document.getElementById('modal-title').textContent = data.title;
+      document.getElementById('modal-body').innerHTML = data.html;
+      const modal = document.getElementById('legal-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeLegalModal() {
+      const modal = document.getElementById('legal-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // =========================================================================
+    // INITIALIZE DRAG-AND-DROP ON WINDOW LOAD
+    // =========================================================================
+    window.onload = function () {
+      const zone = document.getElementById('pdf-dropzone');
+      if (!zone) return;
+
+      ['dragenter', 'dragover'].forEach(evt => {
+        zone.addEventListener(evt, e => {
+          e.preventDefault();
+          e.stopPropagation();
+          zone.classList.add('border-indigo-500', 'bg-indigo-50/50');
+        });
+      });
+
+      ['dragleave', 'drop'].forEach(evt => {
+        zone.addEventListener(evt, e => {
+          e.preventDefault();
+          e.stopPropagation();
+          zone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
+        });
+      });
+
+      zone.addEventListener('drop', e => {
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          handlePdfFiles(e.dataTransfer.files);
+        }
+      });
+    };
+  </script>
+</body>
+</html>
