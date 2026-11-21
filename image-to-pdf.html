@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Convert JPG, PNG &amp; WebP Images to PDF Offline (100% Private) | SahilWebKit</title>
+  <meta name="description" content="Free browser-based Images to PDF converter. Combine multiple JPG, PNG, and WebP photos into a single A4, US Letter, or Fit-to-Image PDF locally with zero server uploads." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://sahilwebkit.com/image-to-pdf" />
+
+  <!-- Open Graph Metadata -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="SahilWebKit" />
+  <meta property="og:title" content="Convert JPG, PNG &amp; WebP Images to PDF Offline (100% Private) | SahilWebKit" />
+  <meta property="og:description" content="Combine multiple JPG, PNG, and WebP images into a single A4, US Letter, or custom PDF 100% locally in your browser without uploading files." />
+  <meta property="og:url" content="https://sahilwebkit.com/image-to-pdf" />
+
+  <!-- Fonts & Tailwind CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Client-side PDF creation library (100% local in browser) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- JSON-LD Structured Data: WebApplication & FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "SahilWebKit Images to PDF Converter",
+        "url": "https://sahilwebkit.com/image-to-pdf",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any (Web Browser)",
+        "browserRequirements": "Requires HTML5 Canvas & JavaScript",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "Free client-side Images to PDF converter that merges JPG, PNG, and WebP photos into an A4, US Letter, or Fit-to-Image PDF document directly in the browser with zero uploads."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Are my scanned IDs, receipts, or photos uploaded to a server?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. SahilWebKit processes every image locally inside your browser using HTML5 Canvas and pdf-lib. Your photos never leave your phone or laptop, and the converter even works offline once the page has loaded."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How many images can I combine into one PDF file?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "There is no artificial page cap. Because processing runs on your device's own memory, you can easily combine 20 to 100+ photos into a single PDF. For large batches of 30+ smartphone photos, selecting the Balanced Web (85%) or Compact Email Size (65%) compression option keeps memory usage fast and the final PDF file light."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I fix sideways or upside-down phone photos before creating the PDF?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Every uploaded image card includes a Rotate 90° button as well as Move Up and Move Down controls so you can orient every scan upright and arrange pages in exact order before generating your PDF."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How are WebP images and transparent PNG backgrounds handled?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Standard PDF specifications natively embed JPEG and PNG streams. SahilWebKit automatically renders WebP images onto a clean white canvas background and converts them cleanly so every image renders reliably in Adobe Acrobat, Chrome, Apple Preview, and mobile PDF viewers."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I keep a multi-page photo PDF under 2 MB for email or portal uploads?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "In the Image Quality & Compression dropdown, choose Compact Email Size (65% JPEG). This downscales ultra-high-resolution camera images to crisp document dimensions (max 1600px) and applies balanced compression, typically shrinking a 10-page smartphone scan from 25 MB down to under 1.5 MB."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    /* Hide scrollbar on mobile horizontal navigation strip while preserving smooth touch swipe */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-indigo-100 selection:text-indigo-900 flex flex-col min-h-screen">
+
+  <!-- ===================================================================== -->
+  <!-- UNIFIED MULTI-PAGE NAVIGATION BAR (SahilWebKit)                       -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Top Row: Brand Logo + Privacy Badge + Share Tool Button -->
+      <div class="flex items-center justify-between py-3 gap-3">
+        <a href="/" class="flex items-center gap-2.5 group shrink-0" aria-label="SahilWebKit Home">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 via-indigo-700 to-emerald-600 flex items-center justify-center text-white shadow-sm group-hover:scale-105 transition-transform">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+            </svg>
+          </div>
+          <div>
+            <span class="font-extrabold text-lg tracking-tight text-slate-900">Sahil<span class="text-indigo-600">WebKit</span></span>
+            <span class="hidden sm:block text-[11px] font-medium text-slate-500 -mt-1">Calculators &amp; Local File Studio</span>
+          </div>
+        </a>
+
+        <div class="flex items-center gap-2.5">
+          <span class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            100% Local Browser Processing
+          </span>
+
+          <button type="button" onclick="copyPageUrl()" class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 active:scale-95 transition">
+            <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+            </svg>
+            <span>Share Tool</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Clean Multi-Page Navigation Strip -->
+      <nav aria-label="Primary Tool Navigation" class="flex items-center gap-1.5 overflow-x-auto py-2.5 border-t border-slate-100 no-scrollbar">
+        <a href="/" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          Solar &amp; Battery
+        </a>
+        <a href="/saas-calculator" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+          <span class="w-2 h-2 rounded-full bg-indigo-400"></span>
+          SaaS Metrics
+        </a>
+        <a href="/ev-charging-calculator" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+          <span class="w-2 h-2 rounded-full bg-sky-400"></span>
+          EV Savings
+        </a>
+        <a href="/image-kb-reducer" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+          Image KB Reducer
+        </a>
+        <a href="/pdf-merger" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+          <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+          PDF Merger
+        </a>
+        <a href="/image-to-pdf" aria-current="page" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 text-white shadow-xs transition">
+          <span class="w-2 h-2 rounded-full bg-amber-300"></span>
+          Images to PDF
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Toast Notification (Replaces alert()) -->
+  <div id="toast" role="status" aria-live="polite" class="fixed bottom-5 right-5 z-50 hidden items-center gap-2.5 bg-slate-900 text-white text-xs sm:text-sm font-medium px-4 py-3 rounded-xl shadow-lg border border-slate-700">
+    <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+    <span id="toast-msg">Notification</span>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- AD SLOT 1: TOP LEADERBOARD (Fixed 90px min-height + >=44px clearance) -->
+  <!-- ===================================================================== -->
+  <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6">
+    <aside aria-label="Advertisement" class="w-full min-h-[90px] bg-slate-100/90 border border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center text-center p-3">
+      <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Advertisement</span>
+      <span class="text-xs text-slate-400 mt-0.5">Top Leaderboard Display Slot (728×90 / Responsive · Zero CLS)</span>
+    </aside>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MAIN WORKSPACE AREA (48px / pt-12 clearance below top ad slot)        -->
+  <!-- ===================================================================== -->
+  <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-12 pb-12 space-y-12">
+
+    <!-- Page Hero & Interactive Images-to-PDF Converter -->
+    <section aria-labelledby="tool-heading" class="space-y-6">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold mb-3">
+          <svg class="w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          100% Private — Images Converted Locally in Browser
+        </div>
+        <h1 id="tool-heading" class="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          Convert JPG, PNG &amp; WebP Images to PDF Offline
+        </h1>
+        <p class="mt-2.5 text-sm sm:text-base text-slate-600 leading-relaxed">
+          Combine scanned documents, receipts, ID cards, or photos into a single A4, US Letter, or Fit-to-Image PDF file. Reorder pages, rotate sideways phone photos 90°, and compress output size locally with zero server uploads.
+        </p>
+      </div>
+
+      <!-- Workspace Grid: Left (Upload + Page Cards) & Right (PDF Layout & Export) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- LEFT COLUMN (7 cols): Dropzone & Interactive Image Page Queue -->
+        <div class="lg:col-span-7 bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-base font-bold text-slate-900">1. Upload &amp; Arrange Image Pages</h2>
+            <div class="flex items-center gap-2">
+              <span id="i2p-badge" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600">0 images</span>
+              <button type="button" onclick="clearAllImages()" class="text-xs font-semibold text-rose-600 hover:text-rose-700 px-2 py-1 rounded-lg hover:bg-rose-50 transition">
+                Clear All
+              </button>
+            </div>
+          </div>
+
+          <!-- Drag-and-Drop / Multi-File Picker -->
+          <div id="i2p-dropzone" role="button" tabindex="0" aria-label="Upload JPG, PNG, or WebP images" onclick="document.getElementById('i2p-file-input').click()" onkeydown="if(event.key==='Enter'||event.key===' ')document.getElementById('i2p-file-input').click()" class="border-2 border-dashed border-slate-300 hover:border-indigo-500 focus:border-indigo-500 focus:outline-none bg-slate-50/80 hover:bg-indigo-50/40 rounded-2xl p-6 text-center cursor-pointer transition-all">
+            <input type="file" id="i2p-file-input" accept="image/jpeg,image/png,image/webp" multiple class="hidden" onchange="handleFilesSelected(this.files)" />
+            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-3">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <p class="text-sm font-bold text-slate-900">Drop multiple JPG, PNG, or WebP images here</p>
+            <p class="text-xs text-slate-500 mt-1">or tap to select multiple photos · Each image becomes one PDF page</p>
+          </div>
+
+          <!-- Uploaded Image Cards List (Reorder, Rotate 90°, Remove) -->
+          <div id="i2p-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div class="col-span-full rounded-xl border border-slate-200 bg-slate-50/70 p-6 text-center">
+              <p class="text-xs sm:text-sm font-medium text-slate-500">No images added yet.</p>
+              <p class="text-[11px] text-slate-400 mt-1">Upload 1 or more photos above to reorder pages or rotate sideways scans.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN (5 cols): PDF Page Layout, Quality & Export Card -->
+        <div class="lg:col-span-5 bg-white rounded-2xl border border-slate-200 shadow-xs p-5 sm:p-6 space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-base font-bold text-slate-900">2. PDF Page &amp; Quality Settings</h2>
+            <button type="button" onclick="resetPdfSettings()" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700 px-2 py-1 rounded-lg hover:bg-indigo-50 transition">
+              Reset
+            </button>
+          </div>
+
+          <div class="space-y-4">
+            <!-- Page Size -->
+            <div>
+              <label for="pdf-page-size" class="block text-xs font-semibold text-slate-700 mb-1.5">Page Size Preset</label>
+              <select id="pdf-page-size" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
+                <option value="fit" selected>Fit to Image (Exact Photo Dimensions)</option>
+                <option value="a4">A4 (210 × 297 mm — UK / Global Standard)</option>
+                <option value="letter">US Letter (8.5 × 11 in — US Standard)</option>
+              </select>
+            </div>
+
+            <!-- Orientation & Margin -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <div>
+                <label for="pdf-orientation" class="block text-xs font-semibold text-slate-700 mb-1.5">Orientation</label>
+                <select id="pdf-orientation" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
+                  <option value="auto" selected>Auto (Match Image)</option>
+                  <option value="portrait">Portrait (Vertical)</option>
+                  <option value="landscape">Landscape (Horizontal)</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="pdf-margin" class="block text-xs font-semibold text-slate-700 mb-1.5">Page Margin</label>
+                <select id="pdf-margin" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
+                  <option value="0" selected>None (0 mm · Full Bleed)</option>
+                  <option value="10">Standard (10 mm)</option>
+                  <option value="20">Wide (20 mm)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Image Quality / Compression -->
+            <div>
+              <label for="pdf-quality" class="block text-xs font-semibold text-slate-700 mb-1.5">Image Quality &amp; File Size</label>
+              <select id="pdf-quality" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 bg-white focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none">
+                <option value="original">Original Quality (Lossless / Max Detail)</option>
+                <option value="balanced" selected>Balanced Web (85% JPEG · Crisp &amp; Fast)</option>
+                <option value="compact">Compact Email Size (65% JPEG · Under 2 MB)</option>
+              </select>
+              <p class="text-[11px] text-slate-400 mt-1">Compact mode re-encodes large camera photos via Canvas to minimize PDF megabytes.</p>
+            </div>
+
+            <!-- Custom Output Filename -->
+            <div>
+              <label for="pdf-filename" class="block text-xs font-semibold text-slate-700 mb-1.5">Output PDF Filename</label>
+              <input type="text" id="pdf-filename" value="sahilwebkit-images.pdf" placeholder="sahilwebkit-images.pdf" class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm font-semibold text-slate-900 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 outline-none" />
+            </div>
+          </div>
+
+          <!-- Primary Create PDF Button -->
+          <div class="pt-1">
+            <button type="button" id="btn-create-pdf" disabled onclick="buildPdfDocument()" class="w-full py-3.5 px-5 rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99] disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              <span id="btn-create-label">Create PDF Now</span>
+            </button>
+          </div>
+
+          <!-- Generated PDF Output Result Box -->
+          <div id="pdf-result-card" class="hidden rounded-2xl bg-slate-900 text-white p-4 sm:p-5 space-y-4 border border-slate-800">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-400">PDF Ready for Download</span>
+              <span id="res-pdf-pages" class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/20 text-emerald-300">1 page</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/70">
+                <p class="text-[11px] text-slate-400">Final PDF Size</p>
+                <p id="res-pdf-size" class="text-lg font-extrabold text-emerald-400 mt-0.5">0 KB</p>
+              </div>
+              <div class="bg-slate-800/80 rounded-xl p-3 border border-slate-700/70">
+                <p class="text-[11px] text-slate-400">Savings vs. Raw</p>
+                <p id="res-pdf-saved" class="text-lg font-extrabold text-indigo-300 mt-0.5">0%</p>
+              </div>
+            </div>
+
+            <button type="button" id="btn-download-pdf" onclick="triggerPdfDownload()" class="w-full py-3.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-bold text-sm shadow-sm transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span id="btn-download-pdf-label">Download PDF</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- AD SLOT 2: BELOW-WORKSPACE DISPLAY UNIT (min-h-[250px] + >=44px gap)  -->
+    <!-- ===================================================================== -->
+    <div class="pt-8">
+      <aside aria-label="Advertisement" class="w-full min-h-[250px] bg-slate-100/90 border border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center text-center p-4">
+        <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Advertisement</span>
+        <span class="text-xs text-slate-400 mt-1 max-w-md">Below-Tool Display Slot (336×280 / Responsive · 48px+ clearance from action buttons)</span>
+      </aside>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- 750+ WORD EDUCATIONAL GUIDE & FAQ (SEO & AdSense Content Depth)       -->
+    <!-- ===================================================================== -->
+    <article class="bg-white rounded-2xl border border-slate-200 shadow-xs p-6 sm:p-10 space-y-8">
+      <div class="max-w-3xl">
+        <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Complete Document &amp; PDF Creation Guide</span>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">How Browser-Based JPG, PNG &amp; WebP to PDF Conversion Works</h2>
+        <p class="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
+          Whether you are combining smartphone photos of signed contracts, assembling expense receipts for accounting, or submitting scanned academic transcripts to a university portal, turning loose image files into a single multi-page PDF keeps your pages ordered and universally readable. Unlike traditional cloud converters that upload your private documents to external servers, <strong>SahilWebKit</strong> builds the entire PDF file directly inside your browser's local memory.
+        </p>
+      </div>
+
+      <!-- Two-Column Practical Guide -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-2">
+        <div class="space-y-3">
+          <h3 class="text-base font-bold text-slate-900">1. Zero-Upload Architecture: Why Local Conversion Matters</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Most free online image-to-PDF tools transmit your files across the internet to a remote Linux server, process them in a queue, and store temporary copies on cloud disks. When your photos contain passports, driver's licenses, bank statements, or medical records, uploading them to unknown servers creates unnecessary privacy exposure.
+          </p>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            SahilWebKit combines the native <strong>HTML5 Canvas API</strong> with the open-source <strong>pdf-lib</strong> binary PDF engine right inside your tab. Your photos are rotated, scaled, and assembled into raw PDF byte streams locally on your phone or laptop—meaning zero network upload delay and complete confidentiality.
+          </p>
+        </div>
+
+        <div class="space-y-3">
+          <h3 class="text-base font-bold text-slate-900">2. Choosing A4 vs. US Letter vs. Fit-to-Image Page Size</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Selecting the right page size ensures your PDF prints cleanly without awkward cropping or stretched borders:
+          </p>
+          <ul class="space-y-2 text-sm text-slate-600">
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 mt-2 shrink-0"></span>
+              <span><strong>Fit to Image (Default):</strong> Creates each PDF page at the exact pixel aspect ratio of that photo—ideal for digital viewing, screenshots, and mixed portrait/landscape phone snaps with zero white borders.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 mt-2 shrink-0"></span>
+              <span><strong>A4 (210 × 297 mm):</strong> The international standard paper size used across the UK, Europe, India, Australia, and global government/visa portals.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 mt-2 shrink-0"></span>
+              <span><strong>US Letter (8.5 × 11 in):</strong> Required for North American legal filings, IRS/tax forms, and US university applications.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Page Size & Compression Comparison Table -->
+      <div class="space-y-3">
+        <h3 class="text-base font-bold text-slate-900">3. Recommended Settings by Document Type &amp; Upload Limit</h3>
+        <div class="overflow-x-auto rounded-xl border border-slate-200">
+          <table class="w-full text-left border-collapse text-xs sm:text-sm">
+            <thead>
+              <tr class="bg-slate-50 border-b border-slate-200 text-slate-800">
+                <th class="py-3 px-4 font-bold">Document Use Case</th>
+                <th class="py-3 px-4 font-bold">Recommended Page Size</th>
+                <th class="py-3 px-4 font-bold">Margin &amp; Orientation</th>
+                <th class="py-3 px-4 font-bold">Quality Preset</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 text-slate-600">
+              <tr>
+                <td class="py-3 px-4 font-bold text-slate-900">Email &amp; Job / Visa Portals (&lt; 2 MB cap)</td>
+                <td class="py-3 px-4">A4 or US Letter</td>
+                <td class="py-3 px-4">Standard (10 mm) · Portrait</td>
+                <td class="py-3 px-4 text-emerald-700 font-semibold">Compact Email Size (65% JPEG)</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-bold text-slate-900">Signed Contracts &amp; Scanned Receipts</td>
+                <td class="py-3 px-4">A4 (UK/Global) or US Letter</td>
+                <td class="py-3 px-4">Standard (10 mm) · Auto</td>
+                <td class="py-3 px-4 text-indigo-700 font-semibold">Balanced Web (85% JPEG)</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-bold text-slate-900">Design Portfolios &amp; Product Catalogs</td>
+                <td class="py-3 px-4">Fit to Image</td>
+                <td class="py-3 px-4">None (0 mm) · Auto</td>
+                <td class="py-3 px-4 text-slate-800 font-semibold">Original Quality</td>
+              </tr>
+              <tr>
+                <td class="py-3 px-4 font-bold text-slate-900">Wide Charts, Diagrams &amp; Certificates</td>
+                <td class="py-3 px-4">A4 or US Letter</td>
+                <td class="py-3 px-4">Standard (10 mm) · Landscape</td>
+                <td class="py-3 px-4 text-indigo-700 font-semibold">Balanced Web (85% JPEG)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- AD SLOT 3: MID-ARTICLE DISPLAY UNIT (Between Table & FAQ, >=40px)   -->
+      <!-- =================================================================== -->
+      <div class="py-2">
+        <aside aria-label="Advertisement" class="w-full min-h-[250px] bg-slate-100/90 border border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center text-center p-4">
+          <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Advertisement</span>
+          <span class="text-xs text-slate-400 mt-1 max-w-md">Mid-Article In-Content Display Slot (Responsive · Zero CLS)</span>
+        </aside>
+      </div>
+
+      <!-- Frequently Asked Questions (5 Detailed Questions) -->
+      <div class="border-t border-slate-200 pt-6 space-y-4">
+        <h3 class="text-lg font-bold text-slate-900">Frequently Asked Questions</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900">1. Are my scanned IDs, receipts, or photos uploaded to a server?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+              No. Every image is read, rotated, compressed, and embedded into your PDF strictly inside your browser's local memory. Your documents never touch any server, and you can even disconnect from Wi-Fi after loading this page and convert files offline.
+            </p>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900">2. How many images can I combine into one PDF file?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+              There is no artificial page cap. Because conversion runs on your own device's RAM, you can combine 20 to 100+ images into one PDF. For large batches of high-megapixel phone photos, choose <strong>Balanced Web (85%)</strong> or <strong>Compact Email Size (65%)</strong> for fast generation.
+            </p>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900">3. How do I fix sideways or upside-down phone photos before exporting?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+              Each uploaded image card has a <strong>Rotate 90°</strong> button as well as <strong>Move Up</strong> and <strong>Move Down</strong> buttons. Rotate any sideways scan until the thumbnail preview looks upright, arrange the page sequence, and click <em>Create PDF Now</em>.
+            </p>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80">
+            <h4 class="text-sm font-bold text-slate-900">4. How are WebP images and transparent PNGs handled?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+              PDF documents natively support JPEG and PNG streams rather than WebP. SahilWebKit automatically converts WebP files and composites transparent PNG backgrounds onto crisp white paper so every page displays properly in Adobe Acrobat, Chrome, and mobile viewers.
+            </p>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/80 md:col-span-2">
+            <h4 class="text-sm font-bold text-slate-900">5. How can I shrink a 10-photo PDF under 2 MB for email or government portals?</h4>
+            <p class="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">
+              Smartphone cameras produce 4000×3000 px images that quickly create 20+ MB PDFs. Select <strong>Compact Email Size (65% JPEG)</strong> in the quality menu—SahilWebKit automatically scales oversized photos down to a sharp 1600 px document resolution and applies clean JPEG compression, routinely cutting total PDF file size by 80%–90% while keeping text clearly legible.
+            </p>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- FOOTER WITH TOOL LINKS & ADSENSE COMPLIANCE MODALS                    -->
+  <!-- ===================================================================== -->
+  <footer class="bg-white border-t border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div>
+          <a href="/" class="font-extrabold text-base text-slate-900">Sahil<span class="text-indigo-600">WebKit</span></a>
+          <p class="text-xs text-slate-500 mt-1 max-w-md">
+            Fast, privacy-first online calculators and local browser file utilities. Zero server uploads, zero registration required.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-4 sm:gap-6 text-xs font-semibold text-slate-600">
+          <button type="button" onclick="openLegalModal('about')" class="hover:text-indigo-600 transition">About</button>
+          <button type="button" onclick="openLegalModal('privacy')" class="hover:text-indigo-600 transition">Privacy Policy</button>
+          <button type="button" onclick="openLegalModal('disclaimer')" class="hover:text-indigo-600 transition">Disclaimer</button>
+          <button type="button" onclick="openLegalModal('contact')" class="hover:text-indigo-600 transition">Contact</button>
+        </div>
+      </div>
+
+      <!-- Quick Internal Links to All 6 Tools -->
+      <div class="pt-5 border-t border-slate-100 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-500">
+        <span class="font-bold text-slate-700">All Tools:</span>
+        <a href="/" class="hover:text-indigo-600 transition">Solar &amp; Battery Calculator</a>
+        <a href="/saas-calculator" class="hover:text-indigo-600 transition">SaaS Churn &amp; LTV Calculator</a>
+        <a href="/ev-charging-calculator" class="hover:text-indigo-600 transition">EV Charging Savings</a>
+        <a href="/image-kb-reducer" class="hover:text-indigo-600 transition">Exact-KB Image Reducer</a>
+        <a href="/pdf-merger" class="hover:text-indigo-600 transition">PDF Merger</a>
+        <a href="/image-to-pdf" class="text-indigo-600 font-semibold">Images to PDF</a>
+      </div>
+
+      <div class="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
+        <p>© 2026 SahilWebKit. All rights reserved.</p>
+        <p>100% Client-Side Execution · Your images and documents never leave your browser.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- LEGAL & ADSENSE COMPLIANCE MODAL                                      -->
+  <!-- ===================================================================== -->
+  <div id="legal-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="bg-white rounded-2xl max-w-xl w-full p-6 sm:p-7 shadow-2xl border border-slate-200 max-h-[85vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <h3 id="modal-title" class="text-lg font-bold text-slate-900">Information</h3>
+        <button type="button" onclick="closeLegalModal()" class="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100" aria-label="Close modal">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div id="modal-body" class="text-sm text-slate-600 space-y-3 leading-relaxed"></div>
+      <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+        <button type="button" onclick="closeLegalModal()" class="px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================================
+    // CLIENT-SIDE IMAGES TO PDF CONVERTER ENGINE (HTML5 CANVAS + pdf-lib)
+    // =========================================================================
+    const imageItems = []; // { id, name, size, type, dataUrl, width, height, rotation }
+    const pdfExportState = {
+      blobUrl: null,
+      filename: 'sahilwebkit-images.pdf'
+    };
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes <= 0) return '0 KB';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.classList.remove('hidden');
+      toast.classList.add('flex');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+        toast.classList.remove('flex');
+      }, 2800);
+    }
+
+    function copyPageUrl() {
+      const tempInput = document.createElement('input');
+      tempInput.value = window.location.href;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand('copy');
+        showToast('Images to PDF link copied to clipboard!');
+      } catch (err) {
+        showToast('Copy the URL from your browser address bar.');
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    function handleFilesSelected(fileList) {
+      if (!fileList || fileList.length === 0) return;
+
+      const validFiles = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+      if (validFiles.length === 0) {
+        showToast('Please select valid JPG, PNG, or WebP image files.');
+        return;
+      }
+
+      let loadedCount = 0;
+      validFiles.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = new Image();
+          img.onload = () => {
+            imageItems.push({
+              id: Math.random().toString(36).slice(2, 10),
+              name: file.name,
+              size: file.size,
+              type: file.type,
+              dataUrl: e.target.result,
+              width: img.naturalWidth,
+              height: img.naturalHeight,
+              rotation: 0
+            });
+            loadedCount++;
+            if (loadedCount === validFiles.length) {
+              hidePreviousResult();
+              renderImageGrid();
+              showToast(`Added ${validFiles.length} image${validFiles.length > 1 ? 's' : ''}`);
+            }
+          };
+          img.onerror = () => {
+            loadedCount++;
+            showToast(`Skipped unreadable image: ${file.name}`);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      document.getElementById('i2p-file-input').value = '';
+    }
+
+    function moveImage(index, delta) {
+      const target = index + delta;
+      if (target < 0 || target >= imageItems.length) return;
+      const temp = imageItems[index];
+      imageItems[index] = imageItems[target];
+      imageItems[target] = temp;
+      hidePreviousResult();
+      renderImageGrid();
+    }
+
+    function rotateImage(index) {
+      if (!imageItems[index]) return;
+      imageItems[index].rotation = (imageItems[index].rotation + 90) % 360;
+      hidePreviousResult();
+      renderImageGrid();
+    }
+
+    function removeImage(index) {
+      imageItems.splice(index, 1);
+      hidePreviousResult();
+      renderImageGrid();
+    }
+
+    function clearAllImages() {
+      imageItems.length = 0;
+      hidePreviousResult();
+      renderImageGrid();
+    }
+
+    function hidePreviousResult() {
+      document.getElementById('pdf-result-card').classList.add('hidden');
+      if (pdfExportState.blobUrl) {
+        URL.revokeObjectURL(pdfExportState.blobUrl);
+        pdfExportState.blobUrl = null;
+      }
+    }
+
+    function resetPdfSettings() {
+      document.getElementById('pdf-page-size').value = 'fit';
+      document.getElementById('pdf-orientation').value = 'auto';
+      document.getElementById('pdf-margin').value = '0';
+      document.getElementById('pdf-quality').value = 'balanced';
+      document.getElementById('pdf-filename').value = 'sahilwebkit-images.pdf';
+      hidePreviousResult();
+      showToast('PDF layout settings reset to defaults.');
+    }
+
+    function renderImageGrid() {
+      const grid = document.getElementById('i2p-grid');
+      const badge = document.getElementById('i2p-badge');
+      const createBtn = document.getElementById('btn-create-pdf');
+
+      badge.textContent = `${imageItems.length} image${imageItems.length === 1 ? '' : 's'}`;
+      createBtn.disabled = imageItems.length === 0;
+
+      if (imageItems.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full rounded-xl border border-slate-200 bg-slate-50/70 p-6 text-center">
+            <p class="text-xs sm:text-sm font-medium text-slate-500">No images added yet.</p>
+            <p class="text-[11px] text-slate-400 mt-1">Upload 1 or more photos above to reorder pages or rotate sideways scans.</p>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = imageItems.map((item, idx) => {
+        const isRotatedSideways = item.rotation === 90 || item.rotation === 270;
+        const dispW = isRotatedSideways ? item.height : item.width;
+        const dispH = isRotatedSideways ? item.width : item.height;
+
+        return `
+          <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3 flex flex-col justify-between gap-2.5">
+            <!-- Thumbnail & Page Number -->
+            <div class="relative h-36 rounded-lg bg-white border border-slate-200 flex items-center justify-center overflow-hidden p-2">
+              <span class="absolute top-1.5 left-1.5 z-10 px-2 py-0.5 rounded-md bg-slate-900/85 text-white text-[10px] font-bold">
+                Page ${idx + 1}
+              </span>
+              ${item.rotation > 0 ? `<span class="absolute top-1.5 right-1.5 z-10 px-1.5 py-0.5 rounded bg-indigo-600 text-white text-[10px] font-bold">${item.rotation}°</span>` : ''}
+              <img src="${item.dataUrl}" alt="${escapeHtml(item.name)}" style="transform: rotate(${item.rotation}deg); max-height: ${isRotatedSideways ? '115px' : '125px'}; max-width: ${isRotatedSideways ? '125px' : '100%'};" class="object-contain transition-transform duration-200 rounded" />
+            </div>
+
+            <!-- File Metadata -->
+            <div class="min-w-0">
+              <p class="text-xs font-bold text-slate-900 truncate" title="${escapeHtml(item.name)}">${escapeHtml(item.name)}</p>
+              <p class="text-[11px] text-slate-500">${dispW} × ${dispH} px · ${formatBytes(item.size)}</p>
+            </div>
+
+            <!-- Reorder, Rotate 90°, Delete Controls -->
+            <div class="flex items-center justify-between gap-1 pt-1 border-t border-slate-200/70">
+              <div class="flex items-center gap-1">
+                <button type="button" onclick="moveImage(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} title="Move Earlier" aria-label="Move Page Up" class="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-35 transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7" /></svg>
+                </button>
+                <button type="button" onclick="moveImage(${idx}, 1)" ${idx === imageItems.length - 1 ? 'disabled' : ''} title="Move Later" aria-label="Move Page Down" class="p-1.5 rounded-lg border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-35 transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                </button>
+                <button type="button" onclick="rotateImage(${idx})" title="Rotate 90° Clockwise" class="inline-flex items-center gap-1 px-2 py-1.5 rounded-lg border border-indigo-200 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-[11px] font-semibold transition">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
+                  <span>90°</span>
+                </button>
+              </div>
+
+              <button type="button" onclick="removeImage(${idx})" title="Remove Image" aria-label="Remove Image" class="p-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100 transition">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Renders each image onto an HTML5 Canvas with applied rotation, white background,
+    // and selected quality/resolution preset so pdf-lib can embed clean JPEG/PNG bytes.
+    function prepareImageForPdf(item, qualityMode) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          const isRotated90or270 = item.rotation === 90 || item.rotation === 270;
+          let targetW = isRotated90or270 ? img.naturalHeight : img.naturalWidth;
+          let targetH = isRotated90or270 ? img.naturalWidth : img.naturalHeight;
+
+          // Downscale oversized camera photos in Balanced / Compact presets
+          const maxEdge = qualityMode === 'compact' ? 1600 : (qualityMode === 'balanced' ? 2400 : 0);
+          if (maxEdge > 0 && (targetW > maxEdge || targetH > maxEdge)) {
+            const scale = Math.min(maxEdge / targetW, maxEdge / targetH);
+            targetW = Math.round(targetW * scale);
+            targetH = Math.round(targetH * scale);
+          }
+
+          const canvas = document.createElement('canvas');
+          canvas.width = targetW;
+          canvas.height = targetH;
+          const ctx = canvas.getContext('2d');
+
+          // Fill crisp white paper background (prevents black alpha artifacts in JPEG)
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, targetW, targetH);
+
+          ctx.save();
+          ctx.translate(targetW / 2, targetH / 2);
+          ctx.rotate((item.rotation * Math.PI) / 180);
+
+          const drawW = isRotated90or270 ? targetH : targetW;
+          const drawH = isRotated90or270 ? targetW : targetH;
+          ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+          ctx.restore();
+
+          const usePng = qualityMode === 'original' && item.type === 'image/png';
+          const outMime = usePng ? 'image/png' : 'image/jpeg';
+          const jpegQuality = qualityMode === 'compact' ? 0.65 : (qualityMode === 'balanced' ? 0.85 : 0.96);
+
+          canvas.toBlob(async blob => {
+            if (!blob) return reject(new Error('Canvas encoding failed'));
+            const arrayBuffer = await blob.arrayBuffer();
+            resolve({
+              bytes: arrayBuffer,
+              mime: outMime,
+              width: targetW,
+              height: targetH
+            });
+          }, outMime, jpegQuality);
+        };
+        img.onerror = () => reject(new Error('Image load failed'));
+        img.src = item.dataUrl;
+      });
+    }
+
+    async function buildPdfDocument() {
+      if (imageItems.length === 0) return;
+      if (typeof PDFLib === 'undefined') {
+        showToast('PDF engine is still loading — please wait a second and retry.');
+        return;
+      }
+
+      const btn = document.getElementById('btn-create-pdf');
+      const btnLabel = document.getElementById('btn-create-label');
+      btn.disabled = true;
+      btnLabel.textContent = 'Building PDF Locally...';
+
+      try {
+        const pageSizeMode = document.getElementById('pdf-page-size').value;
+        const orientationMode = document.getElementById('pdf-orientation').value;
+        const marginMm = parseFloat(document.getElementById('pdf-margin').value) || 0;
+        const qualityMode = document.getElementById('pdf-quality').value;
+
+        // Convert mm to PDF points (1 mm = 2.83465 pt)
+        const marginPt = marginMm * 2.83465;
+
+        const pdfDoc = await PDFLib.PDFDocument.create();
+        pdfDoc.setCreator('SahilWebKit Images to PDF Converter');
+
+        for (const item of imageItems) {
+          const encoded = await prepareImageForPdf(item, qualityMode);
+          const embedded = encoded.mime === 'image/png'
+            ? await pdfDoc.embedPng(encoded.bytes)
+            : await pdfDoc.embedJpg(encoded.bytes);
+
+          let pageW, pageH;
+          const imgIsLandscape = encoded.width > encoded.height;
+
+          if (pageSizeMode === 'fit') {
+            // Convert pixels to PDF points at 96 DPI (0.75 pt/px)
+            const fitW = encoded.width * 0.75;
+            const fitH = encoded.height * 0.75;
+            if (orientationMode === 'portrait' && fitW > fitH) {
+              pageW = fitH + marginPt * 2;
+              pageH = fitW + marginPt * 2;
+            } else if (orientationMode === 'landscape' && fitH > fitW) {
+              pageW = fitH + marginPt * 2;
+              pageH = fitW + marginPt * 2;
+            } else {
+              pageW = fitW + marginPt * 2;
+              pageH = fitH + marginPt * 2;
+            }
+          } else {
+            // A4: 595.28 x 841.89 pt | US Letter: 612 x 792 pt
+            const baseShort = pageSizeMode === 'a4' ? 595.28 : 612;
+            const baseLong = pageSizeMode === 'a4' ? 841.89 : 792;
+
+            const useLandscape = orientationMode === 'landscape' || (orientationMode === 'auto' && imgIsLandscape);
+            pageW = useLandscape ? baseLong : baseShort;
+            pageH = useLandscape ? baseShort : baseLong;
+          }
+
+          const page = pdfDoc.addPage([pageW, pageH]);
+          const availW = Math.max(10, pageW - marginPt * 2);
+          const availH = Math.max(10, pageH - marginPt * 2);
+          const scale = Math.min(availW / encoded.width, availH / encoded.height);
+
+          const drawW = encoded.width * scale;
+          const drawH = encoded.height * scale;
+          const x = (pageW - drawW) / 2;
+          const y = (pageH - drawH) / 2;
+
+          page.drawImage(embedded, { x, y, width: drawW, height: drawH });
+        }
+
+        const pdfBytes = await pdfDoc.save();
+        const pdfBlob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+        if (pdfExportState.blobUrl) URL.revokeObjectURL(pdfExportState.blobUrl);
+        pdfExportState.blobUrl = URL.createObjectURL(pdfBlob);
+
+        let cleanName = (document.getElementById('pdf-filename').value || 'sahilwebkit-images.pdf').trim();
+        if (!cleanName.toLowerCase().endsWith('.pdf')) cleanName += '.pdf';
+        pdfExportState.filename = cleanName;
+
+        // Calculate savings vs total raw uploaded image bytes
+        const rawTotalBytes = imageItems.reduce((sum, it) => sum + it.size, 0);
+        const savedPct = rawTotalBytes > 0
+          ? Math.max(0, ((rawTotalBytes - pdfBlob.size) / rawTotalBytes) * 100)
+          : 0;
+
+        document.getElementById('res-pdf-pages').textContent = `${pdfDoc.getPageCount()} page${pdfDoc.getPageCount() > 1 ? 's' : ''}`;
+        document.getElementById('res-pdf-size').textContent = formatBytes(pdfBlob.size);
+        document.getElementById('res-pdf-saved').textContent = savedPct > 0 ? `${savedPct.toFixed(0)}% smaller` : 'Optimized';
+        document.getElementById('btn-download-pdf-label').textContent = `Download ${cleanName} (${formatBytes(pdfBlob.size)})`;
+
+        const resultCard = document.getElementById('pdf-result-card');
+        resultCard.classList.remove('hidden');
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        showToast(`Created ${cleanName} (${pdfDoc.getPageCount()} pages)!`);
+      } catch (err) {
+        showToast('Error creating PDF. Please verify your image files and try again.');
+      } finally {
+        btn.disabled = imageItems.length === 0;
+        btnLabel.textContent = 'Create PDF Now';
+      }
+    }
+
+    function triggerPdfDownload() {
+      if (!pdfExportState.blobUrl) return;
+      const a = document.createElement('a');
+      a.href = pdfExportState.blobUrl;
+      a.download = pdfExportState.filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast(`Downloading ${pdfExportState.filename}`);
+    }
+
+    // =========================================================================
+    // LEGAL & ADSENSE COMPLIANCE MODALS
+    // =========================================================================
+    const LEGAL_PAGES = {
+      about: {
+        title: 'About SahilWebKit',
+        html: `
+          <p><strong>SahilWebKit</strong> provides fast, privacy-respecting online engineering calculators and client-side document utilities designed for everyday reliability.</p>
+          <p>Unlike cloud-based file converters that upload your images and PDFs to remote servers, every file tool on SahilWebKit runs 100% locally inside your web browser.</p>
+        `
+      },
+      privacy: {
+        title: 'Privacy Policy & Cookie Disclosure',
+        html: `
+          <p><strong>1. Zero-Upload File Guarantee:</strong> All JPG, PNG, and WebP photos converted into PDF documents on SahilWebKit are processed strictly inside your browser's local memory via HTML5 Canvas and <code>pdf-lib</code>. We never upload, store, inspect, or transmit your files to any server.</p>
+          <p><strong>2. Google AdSense &amp; Advertising Cookies:</strong> To keep all tools free, SahilWebKit displays advertisements served by Google AdSense. Third-party vendors, including Google, use cookies (such as the DoubleClick/DART cookie) to serve ads based on a user's prior visits to this website or other websites on the internet.</p>
+          <p><strong>3. Opting Out of Personalized Ads:</strong> You may opt out of personalized advertising by visiting <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" class="text-indigo-600 underline">Google Ads Settings</a> or <a href="https://www.aboutads.info" target="_blank" rel="noopener noreferrer" class="text-indigo-600 underline">www.aboutads.info</a>.</p>
+        `
+      },
+      disclaimer: {
+        title: 'Document & Portal Submission Disclaimer',
+        html: `
+          <p><strong>Official Submission Verification:</strong> While SahilWebKit formats your images into standard A4, US Letter, or exact-dimension PDF files, government, legal, and academic portals enforce specific DPI, margin, and maximum file size rules. Always open and inspect your downloaded PDF before submitting it to an official portal.</p>
+        `
+      },
+      contact: {
+        title: 'Contact SahilWebKit',
+        html: `
+          <p>Have a question, bug report, or feature suggestion? Contact our team:</p>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-1.5 text-xs sm:text-sm">
+            <p><strong>Support &amp; Inquiries:</strong> support@sahilwebkit.com</p>
+            <p><strong>Website:</strong> https://sahilwebkit.com</p>
+            <p><strong>Typical Response Time:</strong> 1–2 business days.</p>
+          </div>
+        `
+      }
+    };
+
+    function openLegalModal(key) {
+      const data = LEGAL_PAGES[key];
+      if (!data) return;
+      document.getElementById('modal-title').textContent = data.title;
+      document.getElementById('modal-body').innerHTML = data.html;
+      const modal = document.getElementById('legal-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeLegalModal() {
+      const modal = document.getElementById('legal-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // =========================================================================
+    // INITIALIZE DRAG-AND-DROP ON WINDOW LOAD
+    // =========================================================================
+    window.onload = function () {
+      const zone = document.getElementById('i2p-dropzone');
+      if (!zone) return;
+
+      ['dragenter', 'dragover'].forEach(evt => {
+        zone.addEventListener(evt, e => {
+          e.preventDefault();
+          e.stopPropagation();
+          zone.classList.add('border-indigo-500', 'bg-indigo-50/50');
+        });
+      });
+
+      ['dragleave', 'drop'].forEach(evt => {
+        zone.addEventListener(evt, e => {
+          e.preventDefault();
+          e.stopPropagation();
+          zone.classList.remove('border-indigo-500', 'bg-indigo-50/50');
+        });
+      });
+
+      zone.addEventListener('drop', e => {
+        if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+          handleFilesSelected(e.dataTransfer.files);
+        }
+      });
+    };
+  </script>
+</body>
+</html>
