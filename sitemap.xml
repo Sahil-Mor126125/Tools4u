@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://sahil.tools4u.workers.dev/</loc>
+    <loc>https://sahilwebkit.com/</loc>
     <lastmod>2026-11-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
@@ -20,19 +20,19 @@
 </url>
 
   <url>
-    <loc>https://sahil.tools4u.workers.dev/image-kb-reducer</loc>
+    <loc>https://sahilwebkit.com/image-kb-reducer</loc>
     <lastmod>2026-11-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://sahil.tools4u.workers.dev/pdf-merger</loc>
+    <loc>https://sahilwebkit.com/pdf-merger</loc>
     <lastmod>2026-11-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://sahil.tools4u.workers.dev/image-to-pdf</loc>
+    <loc>https://sahilwebkit.com/image-to-pdf</loc>
     <lastmod>2026-11-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
