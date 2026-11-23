@@ -134,7 +134,9 @@
           </div>
         </a>
 
-        <div class="flex items-center gap-2.5">
+      <!-- <div class="flex items-center gap-2.5">-->
+          <div id="tool-strip" class="flex items-center gap-2 overflow-x-auto no-scrollbar py-2 border-t border-slate-100">
+
           <span class="hidden md:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
             100% Local Browser Processing
@@ -146,8 +148,9 @@
             </svg>
             <span>Share Tool</span>
           </button>
-        </div>
+          </div>
       </div>
+    </div>
 
       <!-- Clean Multi-Page Navigation Strip -->
       <nav aria-label="Primary Tool Navigation" class="flex items-center gap-1.5 overflow-x-auto py-2.5 border-t border-slate-100 no-scrollbar">
@@ -167,10 +170,12 @@
           <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
           Image KB Reducer
         </a>
-        <a href="/pdf-merger" aria-current="page" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-indigo-600 text-white shadow-xs transition">
-          <span class="w-2 h-2 rounded-full bg-rose-300"></span>
-          PDF Merger
+        <a href="/pdf-merger" data-active="true"
+          class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-600 text-white shadow-xs">
+          <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+         PDF Merger
         </a>
+
         <a href="/image-to-pdf" class="shrink-0 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
           <span class="w-2 h-2 rounded-full bg-amber-500"></span>
           Images to PDF
@@ -995,5 +1000,14 @@
       });
     };
   </script>
+    <script>
+  window.addEventListener('DOMContentLoaded', () => {
+    const activePill = document.querySelector('#tool-strip [data-active="true"]');
+    if (activePill) {
+      activePill.scrollIntoView({ behavior: 'instant', inline: 'center', block: 'nearest' });
+    }
+  });
+</script>
+
 </body>
 </html>
